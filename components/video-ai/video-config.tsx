@@ -1,23 +1,22 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Info, Settings, Video } from "lucide-react";
+import { Button } from "@/components/ui/button"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Slider } from "@/components/ui/slider"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Settings, Info, Video } from "lucide-react"
 
-type Platform = "tiktok" | "youtube" | "youtube-shorts" | "instagram" | "instagram-reels";
+type Platform = "tiktok" | "youtube" | "youtube-shorts" | "instagram" | "instagram-reels"
 
 interface VideoConfigProps {
-  platform: Platform;
-  setPlatform: (value: Platform) => void;
-  videoLength: number;
-  setVideoLength: (value: number) => void;
-  selectedScenes: any[];
-  setIsSidePanelOpen: (value: boolean) => void;
-  setApiQuotaInfo: (value: { isVisible: boolean }) => void;
-  isSidePanelOpen: boolean;
+  platform: Platform
+  setPlatform: (platform: Platform) => void
+  videoLength: number
+  setVideoLength: (length: number) => void
+  onShowApiQuota: () => void
+  hasScenes: boolean
+  isSidePanelOpen: boolean
+  toggleSidePanel: () => void
 }
 
 export default function VideoConfig({
@@ -25,10 +24,10 @@ export default function VideoConfig({
   setPlatform,
   videoLength,
   setVideoLength,
-  selectedScenes,
-  setIsSidePanelOpen,
-  setApiQuotaInfo,
+  onShowApiQuota,
+  hasScenes,
   isSidePanelOpen,
+  toggleSidePanel,
 }: VideoConfigProps) {
   return (
     <Card className="bg-white/10 backdrop-blur-md border-purple-400/30 mb-6 shadow-xl shadow-purple-900/20 rounded-xl overflow-hidden">
@@ -46,14 +45,12 @@ export default function VideoConfig({
           <div className="space-y-2">
             <label className="text-sm font-medium">Platform</label>
             <Select value={platform} onValueChange={(value) => setPlatform(value as Platform)}>
-              <SelectTrigger className="bg-white/10 border-white/20 text-white focus:ring-pink-500">
+              <SelectTrigger className="bg-white/10 backdrop-blur-sm border-white/20 text-white focus:ring-pink-500">
                 <SelectValue placeholder="Select platform" />
               </SelectTrigger>
-              <SelectContent className="bg-purple-900/90 border-white/10 text-white">
+              <SelectContent className="bg-purple-900/90 backdrop-blur-md border-white/10 text-white">
                 <SelectItem value="tiktok">TikTok</SelectItem>
-                <SelectItem value="youtube">YouTube</SelectItem>
                 <SelectItem value="youtube-shorts">YouTube Shorts</SelectItem>
-                <SelectItem value="instagram">Instagram</SelectItem>
                 <SelectItem value="instagram-reels">Instagram Reels</SelectItem>
               </SelectContent>
             </Select>
@@ -66,22 +63,33 @@ export default function VideoConfig({
             </div>
             <Slider
               value={[videoLength]}
-              min={15}
-              max={120}
-              step={5}
+              min={10}
+              max={30}
+              step={2}
               onValueChange={(value) => setVideoLength(value[0])}
+              className="py-4"
             />
           </div>
 
           <div className="space-y-2">
             <label className="text-sm font-medium">Quick Actions</label>
             <div className="flex gap-2">
-              <Button variant="outline" onClick={() => setApiQuotaInfo({ isVisible: true })}>
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex-1 border-white/20 hover:bg-white/10"
+                onClick={onShowApiQuota}
+              >
                 <Info className="w-4 h-4 mr-2" />
                 API Quota
               </Button>
-              {selectedScenes.length > 0 && (
-                <Button variant="outline" onClick={() => setIsSidePanelOpen(!isSidePanelOpen)}>
+              {hasScenes && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex-1 text-white border-white/20 hover:bg-white/10"
+                  onClick={toggleSidePanel}
+                >
                   <Video className="w-4 h-4 mr-2" />
                   {isSidePanelOpen ? "Hide Scenes" : "Show Scenes"}
                 </Button>
@@ -91,5 +99,6 @@ export default function VideoConfig({
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }
+
