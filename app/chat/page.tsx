@@ -278,7 +278,7 @@ export default function ChatPage() {
                   </div>
                   <div>
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-purple-200">
-                      Chat with Mistral AI
+                      Chat with VideoGen AI
                     </span>
                     <CardDescription className="text-purple-200/80 mt-1">
                       Describe your video idea and I'll help you create it
