@@ -1,24 +1,35 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useEffect, useRef } from "react"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Download, Share2, X, Play, Pause, Volume2, VolumeX, Maximize, Minimize } from "lucide-react"
+import { Download, X, Play, Pause, Volume2, VolumeX, Maximize, Minimize, Sparkles, Save, ArrowLeft } from "lucide-react"
+import { motion } from "framer-motion"
+import { toast } from "@/components/ui/use-toast"
 
 interface VideoPlayerProps {
   videoUrl: string
+  thumbnailUrl?: string | null
   onClose: () => void
+  onBack?: () => void
+  onGenerateMore?: () => void
 }
 
-export default function VideoPlayer({ videoUrl, onClose }: VideoPlayerProps) {
+export default function VideoPlayer({
+  videoUrl,
+  thumbnailUrl = null,
+  onClose,
+  onBack,
+  onGenerateMore,
+}: VideoPlayerProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [isPlaying, setIsPlaying] = useState(false)
   const [isMuted, setIsMuted] = useState(false)
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [progress, setProgress] = useState(0)
   const [duration, setDuration] = useState(0)
+  const [isSaving, setIsSaving] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -29,6 +40,8 @@ export default function VideoPlayer({ videoUrl, onClose }: VideoPlayerProps) {
     const handleLoadedData = () => {
       setIsLoading(false)
       setDuration(video.duration)
+      // Auto-play when loaded
+      video.play().catch((err) => console.error("Auto-play failed:", err))
     }
 
     const handleTimeUpdate = () => {
@@ -117,29 +130,79 @@ export default function VideoPlayer({ videoUrl, onClose }: VideoPlayerProps) {
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
+
+    toast({
+      title: "Video Downloaded",
+      description: "Your video has been downloaded successfully.",
+      duration: 3000,
+    })
+  }
+
+  const handleSaveVideo = async () => {
+    setIsSaving(true)
+
+    // Simulate saving to account/project
+    setTimeout(() => {
+      setIsSaving(false)
+      toast({
+        title: "Video Saved",
+        description: "Your video has been saved to your projects.",
+        duration: 3000,
+      })
+    }, 1500)
+  }
+
+  // Create a placeholder background with CSS instead of using an image
+  const placeholderStyle = {
+    background: "linear-gradient(45deg, #1a1a2e, #16213e, #0f3460)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: "white",
+    fontSize: "14px",
   }
 
   return (
     <Card className="bg-white/10 backdrop-blur-md border-purple-400/30 shadow-xl shadow-purple-900/20 rounded-xl overflow-hidden">
-      <CardContent className="p-4">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-xl font-medium text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
-            Your Generated Video
-          </h3>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-white/70 hover:text-white hover:bg-white/10"
-            onClick={onClose}
-          >
-            <X className="h-4 w-4" />
-          </Button>
+      <CardHeader className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 border-b border-white/10 flex flex-row justify-between items-center">
+        <div>
+          <CardTitle className="flex items-center">
+            <Sparkles className="h-5 w-5 text-pink-400 mr-2" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-purple-200">
+              Your Generated Video
+            </span>
+          </CardTitle>
+          <CardDescription className="text-purple-200/80">
+            {duration > 0 ? `${Math.round(duration)} seconds video` : "Loading video..."}
+          </CardDescription>
         </div>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 text-white/70 hover:text-white hover:bg-white/10"
+          onClick={onClose}
+        >
+          <X className="h-4 w-4" />
+        </Button>
+      </CardHeader>
 
+      <CardContent className="p-4">
         <div ref={containerRef} className="relative aspect-video rounded-lg overflow-hidden bg-black/40 mb-4">
           {isLoading && (
-            <div className="absolute inset-0 flex items-center justify-center z-10">
-              <div className="w-12 h-12 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin"></div>
+            <div className="absolute inset-0 flex items-center justify-center z-10 bg-black/50 backdrop-blur-sm">
+              <div className="flex flex-col items-center">
+                <div className="relative">
+                  <motion.div
+                    className="w-16 h-16 rounded-full border-4 border-purple-500/30 border-t-purple-500 border-r-pink-500"
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Sparkles className="h-6 w-6 text-white/80" />
+                  </div>
+                </div>
+                <p className="mt-4 text-white/80 text-sm">Loading your video...</p>
+              </div>
             </div>
           )}
 
@@ -147,9 +210,14 @@ export default function VideoPlayer({ videoUrl, onClose }: VideoPlayerProps) {
             ref={videoRef}
             src={videoUrl}
             className="w-full h-full"
-            poster="/placeholder.svg?height=720&width=1280"
+            style={thumbnailUrl ? {} : placeholderStyle}
+            poster={thumbnailUrl || undefined}
             playsInline
-          />
+            loop
+          >
+            {/* Fallback content if video can't be displayed */}
+            <div style={placeholderStyle}>Video loading...</div>
+          </video>
 
           <div className="absolute bottom-0 left-0 right-0 bg-black/50 backdrop-blur-sm p-2 transition-opacity duration-300 opacity-100 hover:opacity-100">
             <div className="w-full h-1 bg-white/20 rounded-full mb-2 cursor-pointer" onClick={handleProgressClick}>
@@ -197,18 +265,56 @@ export default function VideoPlayer({ videoUrl, onClose }: VideoPlayerProps) {
           </div>
         </div>
 
-        <div className="flex gap-2 justify-end">
+        <div className="grid grid-cols-2 gap-4">
           <Button variant="outline" className="text-white border-white/20 hover:bg-white/10" onClick={handleDownload}>
             <Download className="h-4 w-4 mr-2" />
-            Download
+            Download Video
           </Button>
-          <Button className="bg-gradient-to-r from-pink-500 to-violet-500 hover:from-pink-600 hover:to-violet-600">
-            <Share2 className="h-4 w-4 mr-2" />
-            Share
+
+          <Button
+            className="bg-gradient-to-r from-pink-500 to-violet-500 hover:from-pink-600 hover:to-violet-600"
+            onClick={handleSaveVideo}
+            disabled={isSaving}
+          >
+            {isSaving ? (
+              <>
+                <motion.div
+                  className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full mr-2"
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+                />
+                Saving...
+              </>
+            ) : (
+              <>
+                <Save className="h-4 w-4 mr-2" />
+                Save to Projects
+              </>
+            )}
           </Button>
         </div>
       </CardContent>
+
+      <CardFooter className="border-t border-white/10 p-4 flex justify-between">
+        {onBack && (
+          <Button variant="outline" className="text-white border-white/20 hover:bg-white/10" onClick={onBack}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Scenes
+          </Button>
+        )}
+
+        {onGenerateMore && (
+          <Button
+            className="bg-gradient-to-r from-pink-500 to-violet-500 hover:from-pink-600 hover:to-violet-600 ml-auto"
+            onClick={onGenerateMore}
+          >
+            <Sparkles className="h-4 w-4 mr-2" />
+            Generate More
+          </Button>
+        )}
+      </CardFooter>
     </Card>
   )
 }
 
+  

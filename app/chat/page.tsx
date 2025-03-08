@@ -1,19 +1,37 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
 import { AnimatePresence, motion } from "framer-motion"
-import { Sparkles } from "lucide-react"
-import type { Message, VideoScene, Platform } from "@/types"
+import { Sparkles } from 'lucide-react'
 import Navbar from "@/components/navbar"
-import ApiQuotaModal from "@/components/video-ai/api-quota-model"
-import VideoConfig from "@/components/video-ai/video-config"
-import ChatMessages from "@/components/video-ai/chat-messages"
+import ApiQuotaModal from "@/components/video-ai/api-quota-model";
+import VideoConfig from "@/components/video-ai/video-config";
+import ChatMessages from "@/components/video-ai/chat-messages";
 import ChatInput from "@/components/video-ai/chat-input"
 import ScenesPanel from "@/components/video-ai/scenes-panel"
 import TipsPanel from "@/components/video-ai/tips-panel"
+import { Toaster } from "@/components/ui/toaster"
+import { useToast } from "@/components/ui/use-toast"
+
+// Define types
+type Platform = "tiktok" | "youtube" | "youtube-shorts" | "instagram" | "instagram-reels"
+
+type VideoScene = {
+  id: number
+  description: string
+  duration: string
+  visualElements: string[]
+}
+
+type Message = {
+  role: "user" | "assistant"
+  content: string
+  scenes?: VideoScene[]
+}
 
 export default function ChatPage() {
+  const { toast } = useToast()
   const [platform, setPlatform] = useState<Platform>("tiktok")
   const [videoLength, setVideoLength] = useState<number>(30)
   const [prompt, setPrompt] = useState("")
@@ -28,6 +46,12 @@ export default function ChatPage() {
   const [selectedScenes, setSelectedScenes] = useState<VideoScene[]>([])
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(false)
   const [apiQuotaInfo, setApiQuotaInfo] = useState({ isVisible: false })
+  const [isClient, setIsClient] = useState(false)
+
+  // Fix hydration issues by only rendering on client
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   const handleSubmit = async () => {
     if (!prompt.trim() || isGenerating) return
@@ -66,23 +90,45 @@ export default function ChatPage() {
       })
 
       if (!response.ok) {
-        throw new Error("Failed to get response from API")
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || `Failed to get response from API: ${response.status}`)
       }
 
       const data = await response.json()
+      console.log("API response:", data)
 
       // Add AI response with scenes if available
-      const aiResponse = {
-        role: "assistant" as const,
-        content: data.response,
-        scenes: data.scenes && data.scenes.length > 0 ? data.scenes : undefined,
+      const aiResponse: Message = {
+        role: "assistant",
+        content: data.response || "I've created some scenes for your video!",
+      }
+
+      // Make sure scenes are properly formatted
+      if (data.scenes && Array.isArray(data.scenes) && data.scenes.length > 0) {
+        // Ensure each scene has the required properties
+        const validScenes = data.scenes.map((scene: any, index: number) => ({
+          id: scene.id || index + 1,
+          description: scene.description || "Scene description",
+          duration: scene.duration || `${Math.floor(videoLength / data.scenes.length)} seconds`,
+          visualElements: Array.isArray(scene.visualElements) ? scene.visualElements : [],
+        }))
+
+        console.log("Setting scenes in aiResponse:", validScenes)
+        aiResponse.scenes = validScenes
+        setSelectedScenes(validScenes)
+
+        // Show toast notification
+        toast({
+          title: "Scenes Generated",
+          description: `${validScenes.length} scenes have been created for your video.`,
+          duration: 3000,
+        })
       }
 
       setMessages((prev) => [...prev, aiResponse])
 
       // If scenes were generated, open the side panel
-      if (data.scenes && data.scenes.length > 0) {
-        setSelectedScenes(data.scenes)
+      if (aiResponse.scenes && aiResponse.scenes.length > 0) {
         setIsSidePanelOpen(true)
       }
     } catch (error) {
@@ -92,27 +138,52 @@ export default function ChatPage() {
         ...prev,
         {
           role: "assistant",
-          content: "I'm sorry, I encountered an error while processing your request. Please try again.",
+          content: `I'm sorry, I encountered an error while processing your request: ${error instanceof Error ? error.message : "Unknown error"}. Please try again.`,
         },
       ])
+
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to process your request",
+        variant: "destructive",
+        duration: 5000,
+      })
     } finally {
       setIsGenerating(false)
     }
   }
 
-  const handleSceneClick = (scenes: VideoScene[]) => {
+  const handleSceneClick = useCallback((scenes: VideoScene[]) => {
+    console.log("Setting scenes from click:", scenes)
     setSelectedScenes(scenes)
     setIsSidePanelOpen(true)
+  }, [])
+
+  const handleAddScene = useCallback(() => {
+    setIsSidePanelOpen(false)
+    setPrompt("Add another scene to my video that complements the existing scenes")
+
+    setTimeout(() => {
+      const inputElement = document.querySelector("textarea") as HTMLTextAreaElement
+      if (inputElement) {
+        inputElement.focus()
+      }
+    }, 100)
+  }, [])
+
+  // Don't render until client-side to avoid hydration issues
+  if (!isClient) {
+    return null
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 text-white relative overflow-hidden">
-      <div className="mt-72">
-        <Navbar />
-      </div>
       <div className="absolute inset-0 bg-[url('/placeholder.svg?height=100&width=100')] opacity-5"></div>
       <div className="absolute -top-40 -right-40 w-80 h-80 bg-pink-500 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
       <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
+
+      <Navbar />
+      <Toaster />
 
       {/* API Quota Info Modal */}
       <AnimatePresence>
@@ -168,7 +239,7 @@ export default function ChatPage() {
 
           {/* Side Panel - Either Scenes or Tips */}
           <AnimatePresence mode="wait">
-            {isSidePanelOpen ? (
+            {isSidePanelOpen && selectedScenes.length > 0 ? (
               <motion.div
                 key="scenes"
                 className="lg:col-span-1"
@@ -177,7 +248,11 @@ export default function ChatPage() {
                 exit={{ opacity: 0, x: 50 }}
                 transition={{ duration: 0.3 }}
               >
-                <ScenesPanel scenes={selectedScenes} onClose={() => setIsSidePanelOpen(false)} />
+                <ScenesPanel
+                  scenes={selectedScenes}
+                  onClose={() => setIsSidePanelOpen(false)}
+                  onAddScene={handleAddScene}
+                />
               </motion.div>
             ) : (
               <motion.div
@@ -202,4 +277,3 @@ export default function ChatPage() {
     </div>
   )
 }
-

@@ -4,17 +4,17 @@ import { useRef, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Video } from "lucide-react"
 
-type Message = {
-  role: "user" | "assistant"
-  content: string
-  scenes?: VideoScene[]
-}
-
 type VideoScene = {
   id: number
   description: string
   duration: string
   visualElements: string[]
+}
+
+type Message = {
+  role: "user" | "assistant"
+  content: string
+  scenes?: VideoScene[]
 }
 
 interface ChatMessagesProps {
