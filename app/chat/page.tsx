@@ -13,6 +13,7 @@ import ScenesPanel from "@/components/video-ai/scenes-panel"
 import TipsPanel from "@/components/video-ai/tips-panel"
 import { Toaster } from "@/components/ui/toaster"
 import { useToast } from "@/components/ui/use-toast"
+import { SavedVideo } from "@/components/video-ai/video-hisotry"
 
 // Define types
 type Platform = "tiktok" | "youtube" | "youtube-shorts" | "instagram" | "instagram-reels"
@@ -47,11 +48,35 @@ export default function ChatPage() {
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(false)
   const [apiQuotaInfo, setApiQuotaInfo] = useState({ isVisible: false })
   const [isClient, setIsClient] = useState(false)
+  const [savedVideos, setSavedVideos] = useState<SavedVideo[]>([])
 
   // Fix hydration issues by only rendering on client
   useEffect(() => {
     setIsClient(true)
+
+    // Load saved videos from localStorage
+    const storedVideos = localStorage.getItem("savedVideos")
+    if (storedVideos) {
+      try {
+        const parsedVideos = JSON.parse(storedVideos)
+        // Convert string dates back to Date objects
+        const videosWithDates = parsedVideos.map((video: any) => ({
+          ...video,
+          createdAt: new Date(video.createdAt),
+        }))
+        setSavedVideos(videosWithDates)
+      } catch (error) {
+        console.error("Error loading saved videos:", error)
+      }
+    }
   }, [])
+
+  // Save videos to localStorage when they change
+  useEffect(() => {
+    if (savedVideos.length > 0 && isClient) {
+      localStorage.setItem("savedVideos", JSON.stringify(savedVideos))
+    }
+  }, [savedVideos, isClient])
 
   const handleSubmit = async () => {
     if (!prompt.trim() || isGenerating) return
@@ -61,6 +86,13 @@ export default function ChatPage() {
       prompt.toLowerCase().includes("show scene") ||
       prompt.toLowerCase().includes("show me the scene") ||
       prompt.toLowerCase().includes("view scene")
+
+    // Check if user is asking to show video history
+    const showHistoryRequest =
+      prompt.toLowerCase().includes("show history") ||
+      prompt.toLowerCase().includes("show my videos") ||
+      prompt.toLowerCase().includes("view history") ||
+      prompt.toLowerCase().includes("view my videos")
 
     // Add user message
     const userMessage = { role: "user" as const, content: prompt }
@@ -72,6 +104,23 @@ export default function ChatPage() {
     if (showSceneRequest && selectedScenes.length > 0) {
       setIsGenerating(false)
       setIsSidePanelOpen(true)
+      return
+    }
+
+    // If user is asking to show video history and we have videos, show them
+    if (showHistoryRequest && savedVideos.length > 0) {
+      setIsGenerating(false)
+      setIsSidePanelOpen(true)
+
+      // Add AI response
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: `Here's your video history. You have ${savedVideos.length} saved videos.`,
+        },
+      ])
+
       return
     }
 
@@ -171,6 +220,19 @@ export default function ChatPage() {
     }, 100)
   }, [])
 
+  const handleSaveVideo = useCallback(
+    (video: SavedVideo) => {
+      setSavedVideos((prev) => [video, ...prev])
+
+      toast({
+        title: "Video Saved",
+        description: "Your video has been added to your history.",
+        duration: 3000,
+      })
+    },
+    [toast],
+  )
+
   // Don't render until client-side to avoid hydration issues
   if (!isClient) {
     return null
@@ -181,7 +243,8 @@ export default function ChatPage() {
       <div className="absolute inset-0 bg-[url('/placeholder.svg?height=100&width=100')] opacity-5"></div>
       <div className="absolute -top-40 -right-40 w-80 h-80 bg-pink-500 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
       <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
-
+      
+      <div className="mt-72"></div>
       <Navbar />
       <Toaster />
 
@@ -252,6 +315,8 @@ export default function ChatPage() {
                   scenes={selectedScenes}
                   onClose={() => setIsSidePanelOpen(false)}
                   onAddScene={handleAddScene}
+                  savedVideos={savedVideos}
+                  onSaveVideo={handleSaveVideo}
                 />
               </motion.div>
             ) : (

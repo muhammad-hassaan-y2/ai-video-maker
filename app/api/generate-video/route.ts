@@ -29,19 +29,22 @@ export async function POST(req: NextRequest) {
     // Initialize fal.ai client
     fal.config({ credentials: apiKey })
 
-    // For now, we'll generate a single video for the first scene
+    // For now, we'll generate a video for the first scene
     // In a production app, you could generate multiple videos (one per scene) and use a video stitching service
     const scene = scenes[0]
     const sceneDescription = scene.description
-    const visualElements = scene.visualElements.join(", ")
+    const visualElements = scene.visualElements ? scene.visualElements.join(", ") : ""
+
+    // Create a detailed prompt combining the scene description and visual elements
+    const prompt = `${sceneDescription} ${visualElements ? `Including: ${visualElements}` : ""}`
 
     console.log("🚀 Sending request to fal-ai/veo2...")
-    console.log("Prompt:", sceneDescription)
+    console.log("Prompt:", prompt)
 
     // Use the veo2 model as requested
     const result = await fal.subscribe("fal-ai/veo2", {
       input: {
-        prompt: `${sceneDescription} ${visualElements}`,
+        prompt: prompt,
         negative_prompt: "poor quality, blurry, distorted, text, watermark",
         guidance_scale: 12.0,
         seed: Math.floor(Math.random() * 10000000),
@@ -89,16 +92,17 @@ export async function POST(req: NextRequest) {
       videoUrl: videoUrl,
       thumbnailUrl: thumbnailUrl,
       duration: 5, // Fixed duration of 5 seconds for veo2 model
-      message: "Video generated successfully using veo2 model. Note: This model is limited to 5-second videos.",
-      modelLimitation: "The veo2 model is currently limited to generating 5-second videos regardless of requested duration."
+      message: "Video generated successfully using veo2 model",
+      modelLimitation:
+        "The veo2 model is currently limited to generating 5-second videos regardless of requested duration.",
     })
   } catch (error) {
     console.error("❌ Unexpected error:", error)
-    
+
     // Provide more detailed error information
     let errorMessage = "Failed to process your request"
-    let errorDetails = error instanceof Error ? error.message : String(error)
-    
+    const errorDetails = error instanceof Error ? error.message : String(error)
+
     // Check for specific error types
     if (errorDetails.includes("404") || errorDetails.includes("Not Found")) {
       errorMessage = "The AI model endpoint was not found. Please check if the model is available."
@@ -107,7 +111,7 @@ export async function POST(req: NextRequest) {
     } else if (errorDetails.includes("429") || errorDetails.includes("Too Many Requests")) {
       errorMessage = "Rate limit exceeded. Please try again later."
     }
-    
+
     return NextResponse.json(
       {
         error: errorMessage,
@@ -117,3 +121,4 @@ export async function POST(req: NextRequest) {
     )
   }
 }
+

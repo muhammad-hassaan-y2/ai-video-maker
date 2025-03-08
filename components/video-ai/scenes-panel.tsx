@@ -3,11 +3,13 @@
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Video, Clock, X, AlertCircle, Sparkles, Edit, Plus, Trash2, Info } from "lucide-react"
+import { Video, Clock, X, AlertCircle, Sparkles, Edit, Plus, Trash2, Info, History } from "lucide-react"
 import { useState, useEffect } from "react"
 import VideoPlayer from "./video-player"
 import VideoGenerationStatus from "./video-generation-status"
 import { toast } from "@/components/ui/use-toast"
+import { v4 as uuidv4 } from "uuid"
+import VideoHistory, { type SavedVideo } from "./video-hisotry"
 
 type VideoScene = {
   id: number
@@ -20,9 +22,17 @@ interface ScenesPanelProps {
   scenes: VideoScene[]
   onClose: () => void
   onAddScene?: () => void
+  savedVideos?: SavedVideo[]
+  onSaveVideo?: (video: SavedVideo) => void
 }
 
-export default function ScenesPanel({ scenes, onClose, onAddScene }: ScenesPanelProps) {
+export default function ScenesPanel({
+  scenes,
+  onClose,
+  onAddScene,
+  savedVideos = [],
+  onSaveVideo = () => {},
+}: ScenesPanelProps) {
   const [isGeneratingVideo, setIsGeneratingVideo] = useState(false)
   const [videoUrl, setVideoUrl] = useState<string | null>(null)
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null)
@@ -35,6 +45,8 @@ export default function ScenesPanel({ scenes, onClose, onAddScene }: ScenesPanel
   const [modelLimitation, setModelLimitation] = useState<string | null>(
     "Note: The current AI model is limited to generating 5-second videos regardless of scene duration.",
   )
+  const [showHistory, setShowHistory] = useState(false)
+  const [currentVideo, setCurrentVideo] = useState<SavedVideo | null>(null)
 
   // Update working scenes when scenes prop changes
   useEffect(() => {
@@ -109,6 +121,20 @@ export default function ScenesPanel({ scenes, onClose, onAddScene }: ScenesPanel
         setModelLimitation(data.modelLimitation)
       }
 
+      // Save the video to history
+      const newVideo: SavedVideo = {
+        id: uuidv4(),
+        videoUrl: data.videoUrl,
+        thumbnailUrl: data.thumbnailUrl || null,
+        title: `Video ${savedVideos.length + 1}`,
+        description: workingScenes[0]?.description || "AI Generated Video",
+        duration: data.duration || 5,
+        createdAt: new Date(),
+        scenes: workingScenes,
+      }
+
+      onSaveVideo(newVideo)
+
       // Complete the progress and clear the interval
       clearInterval(progressInterval)
       setGenerationProgress(100)
@@ -159,6 +185,7 @@ export default function ScenesPanel({ scenes, onClose, onAddScene }: ScenesPanel
 
   const handleBackToScenes = () => {
     setVideoUrl(null)
+    setCurrentVideo(null)
   }
 
   const handleGenerateMore = () => {
@@ -171,6 +198,38 @@ export default function ScenesPanel({ scenes, onClose, onAddScene }: ScenesPanel
         duration: 3000,
       })
     }
+  }
+
+  const handleShowHistory = () => {
+    setShowHistory(true)
+  }
+
+  const handleCloseHistory = () => {
+    setShowHistory(false)
+  }
+
+  const handleSelectVideo = (video: SavedVideo) => {
+    setCurrentVideo(video)
+    setShowHistory(false)
+  }
+
+  // If we're showing the video history
+  if (showHistory) {
+    return <VideoHistory videos={savedVideos} onClose={handleCloseHistory} onSelectVideo={handleSelectVideo} />
+  }
+
+  // If we have a selected video from history
+  if (currentVideo) {
+    return (
+      <VideoPlayer
+        videoUrl={currentVideo.videoUrl}
+        thumbnailUrl={currentVideo.thumbnailUrl}
+        title={currentVideo.title}
+        onClose={onClose}
+        onBack={handleBackToScenes}
+        onGenerateMore={handleGenerateMore}
+      />
+    )
   }
 
   // If we have a video URL, show the video player
@@ -219,15 +278,28 @@ export default function ScenesPanel({ scenes, onClose, onAddScene }: ScenesPanel
                   {workingScenes.length} {workingScenes.length === 1 ? "scene" : "scenes"} ready for generation
                 </CardDescription>
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-white/70 hover:text-white hover:bg-white/10"
-                onClick={onClose}
-                type="button"
-              >
-                <X className="h-4 w-4" />
-              </Button>
+              <div className="flex items-center gap-2">
+                {savedVideos.length > 0 && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-white/70 hover:text-white hover:bg-white/10"
+                    onClick={handleShowHistory}
+                    title="View Video History"
+                  >
+                    <History className="h-4 w-4" />
+                  </Button>
+                )}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-white/70 hover:text-white hover:bg-white/10"
+                  onClick={onClose}
+                  type="button"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
             </CardHeader>
 
             {!workingScenes || workingScenes.length === 0 ? (
@@ -239,12 +311,24 @@ export default function ScenesPanel({ scenes, onClose, onAddScene }: ScenesPanel
                     There are no scenes available to display. Try generating scenes by describing a video idea in the
                     chat.
                   </p>
-                  <Button
-                    onClick={onClose}
-                    className="bg-gradient-to-r from-pink-500 to-violet-500 hover:from-pink-600 hover:to-violet-600"
-                  >
-                    Return to Chat
-                  </Button>
+                  <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                    <Button
+                      onClick={onClose}
+                      className="bg-gradient-to-r from-pink-500 to-violet-500 hover:from-pink-600 hover:to-violet-600"
+                    >
+                      Return to Chat
+                    </Button>
+                    {savedVideos.length > 0 && (
+                      <Button
+                        variant="outline"
+                        className="text-white border-white/20 hover:bg-white/10"
+                        onClick={handleShowHistory}
+                      >
+                        <History className="h-4 w-4 mr-2" />
+                        View Video History
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </CardContent>
             ) : (
@@ -255,6 +339,20 @@ export default function ScenesPanel({ scenes, onClose, onAddScene }: ScenesPanel
                     <div className="p-3 bg-yellow-500/20 border border-yellow-500/30 rounded-lg text-white text-sm flex items-start gap-2">
                       <Info className="h-5 w-5 text-yellow-400 shrink-0 mt-0.5" />
                       <span>{modelLimitation}</span>
+                    </div>
+                  )}
+
+                  {/* Video history button for mobile */}
+                  {savedVideos.length > 0 && (
+                    <div className="sm:hidden">
+                      <Button
+                        variant="outline"
+                        className="w-full text-white border-white/20 hover:bg-white/10"
+                        onClick={handleShowHistory}
+                      >
+                        <History className="h-4 w-4 mr-2" />
+                        View Your Video History ({savedVideos.length})
+                      </Button>
                     </div>
                   )}
 

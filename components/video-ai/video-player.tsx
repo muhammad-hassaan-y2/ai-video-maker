@@ -4,24 +4,41 @@ import type React from "react"
 import { useState, useEffect, useRef } from "react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Download, X, Play, Pause, Volume2, VolumeX, Maximize, Minimize, Sparkles, Save, ArrowLeft } from "lucide-react"
+import {
+  Download,
+  X,
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
+  Maximize,
+  Minimize,
+  Sparkles,
+  Save,
+  ArrowLeft,
+  History,
+} from "lucide-react"
 import { motion } from "framer-motion"
 import { toast } from "@/components/ui/use-toast"
 
 interface VideoPlayerProps {
   videoUrl: string
   thumbnailUrl?: string | null
+  title?: string
   onClose: () => void
   onBack?: () => void
   onGenerateMore?: () => void
+  onShowHistory?: () => void
 }
 
 export default function VideoPlayer({
   videoUrl,
   thumbnailUrl = null,
+  title = "Generated Video",
   onClose,
   onBack,
   onGenerateMore,
+  onShowHistory,
 }: VideoPlayerProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -168,22 +185,33 @@ export default function VideoPlayer({
         <div>
           <CardTitle className="flex items-center">
             <Sparkles className="h-5 w-5 text-pink-400 mr-2" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-purple-200">
-              Your Generated Video
-            </span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-purple-200">{title}</span>
           </CardTitle>
           <CardDescription className="text-purple-200/80">
             {duration > 0 ? `${Math.round(duration)} seconds video` : "Loading video..."}
           </CardDescription>
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8 text-white/70 hover:text-white hover:bg-white/10"
-          onClick={onClose}
-        >
-          <X className="h-4 w-4" />
-        </Button>
+        <div className="flex items-center gap-2">
+          {onShowHistory && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-white/70 hover:text-white hover:bg-white/10"
+              onClick={onShowHistory}
+              title="View Video History"
+            >
+              <History className="h-4 w-4" />
+            </Button>
+          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-white/70 hover:text-white hover:bg-white/10"
+            onClick={onClose}
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
       </CardHeader>
 
       <CardContent className="p-4">
@@ -317,4 +345,3 @@ export default function VideoPlayer({
   )
 }
 
-  
