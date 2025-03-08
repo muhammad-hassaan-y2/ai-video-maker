@@ -83,7 +83,7 @@ export default function TipsPanel({ platform, setPrompt, hasScenes, onShowScenes
             <Button
               variant="outline"
               size="sm"
-              className="w-full justify-start text-left text-white/80 border-white/10 hover:bg-white/10"
+              className="w-full justify-start text-left text-white80 border-white/10 hover:bg-white/10"
               onClick={() => setPrompt("Create a product showcase video for a new smartphone with sleek transitions")}
             >
               Product showcase video
@@ -91,7 +91,7 @@ export default function TipsPanel({ platform, setPrompt, hasScenes, onShowScenes
             <Button
               variant="outline"
               size="sm"
-              className="w-full justify-start text-left text-white/80 border-white/10 hover:bg-white/10"
+              className="w-full justify-start text-left text-whit/80 border-white/10 hover:bg-white/10"
               onClick={() => setPrompt("Make a travel montage video of a beach vacation with upbeat vibes")}
             >
               Travel montage video
@@ -99,7 +99,7 @@ export default function TipsPanel({ platform, setPrompt, hasScenes, onShowScenes
             <Button
               variant="outline"
               size="sm"
-              className="w-full justify-start text-left text-white/80 border-white/10 hover:bg-white/10"
+              className="w-full justify-start text-left text-whie/80 border-white/10 hover:bg-white/10"
               onClick={() => setPrompt("Create a cooking tutorial for making pasta with step-by-step instructions")}
             >
               Cooking tutorial

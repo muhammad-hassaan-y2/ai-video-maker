@@ -77,7 +77,7 @@ export default function VideoConfig({
               <Button
                 variant="outline"
                 size="sm"
-                className="flex-1 border-white/20 hover:bg-white/10"
+                className="flex-1 text-blue-950 border-white/20 hover:bg-white/10"
                 onClick={onShowApiQuota}
               >
                 <Info className="w-4 h-4 mr-2" />
@@ -87,7 +87,7 @@ export default function VideoConfig({
                 <Button
                   variant="outline"
                   size="sm"
-                  className="flex-1 text-white border-white/20 hover:bg-white/10"
+                  className="flex-1 text-whte border-white/20 hover:bg-white/10"
                   onClick={toggleSidePanel}
                 >
                   <Video className="w-4 h-4 mr-2" />

@@ -283,7 +283,7 @@ export default function ScenesPanel({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-8 w-8 text-white/70 hover:text-white hover:bg-white/10"
+                    className="h-8 w-8 text-whit/70 hover:text-white hover:bg-white/10"
                     onClick={handleShowHistory}
                     title="View Video History"
                   >
