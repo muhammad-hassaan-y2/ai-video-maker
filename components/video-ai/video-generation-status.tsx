@@ -2,18 +2,20 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
-import { Film, Sparkles, Layers, Wand2, Upload } from 'lucide-react'
+import { Film, Sparkles, Layers, Wand2, Upload } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useEffect, useState } from "react"
 
 interface VideoGenerationStatusProps {
   progress: number
   currentStep: string
+  sceneId: number | null
 }
 
-export default function VideoGenerationStatus({ progress, currentStep }: VideoGenerationStatusProps) {
+export default function VideoGenerationStatus({ progress, currentStep, sceneId }: VideoGenerationStatusProps) {
   const [progressText, setProgressText] = useState("")
-  
+  const [elapsedTime, setElapsedTime] = useState(0)
+
   // Generate random progress text messages for more engaging feedback
   useEffect(() => {
     const messages = [
@@ -24,38 +26,54 @@ export default function VideoGenerationStatus({ progress, currentStep }: VideoGe
       "Rendering transitions...",
       "Enhancing visual quality...",
       "Synchronizing elements...",
-      "Finalizing output..."
+      "Finalizing output...",
     ]
-    
+
     const interval = setInterval(() => {
       const randomIndex = Math.floor(Math.random() * messages.length)
       setProgressText(messages[randomIndex])
     }, 3000)
-    
+
     return () => clearInterval(interval)
   }, [])
 
+  // Track elapsed time
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setElapsedTime((prev) => prev + 1)
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [])
+
+  // Format elapsed time
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60)
+    const secs = seconds % 60
+    return `${mins}:${secs < 10 ? "0" : ""}${secs}`
+  }
+
   const steps = [
-    { 
-      name: "Analyzing scenes", 
+    {
+      name: "Analyzing scenes",
       icon: <Layers className="h-4 w-4" />,
-      description: "Breaking down your video concept into visual components"
+      description: "Breaking down your video concept into visual components",
     },
-    { 
-      name: "Generating visuals", 
+    {
+      name: "Generating visuals",
       icon: <Sparkles className="h-4 w-4" />,
-      description: "Creating the visual elements for each scene"
+      description: "Creating the visual elements for each scene",
     },
-    { 
-      name: "Adding transitions", 
+    {
+      name: "Adding transitions",
       icon: <Wand2 className="h-4 w-4" />,
-      description: "Applying smooth transitions between scenes"
+      description: "Applying smooth transitions between scenes",
     },
-    { 
-      name: "Rendering final video", 
+    {
+      name: "Rendering final video",
       icon: <Upload className="h-4 w-4" />,
-      description: "Compiling everything into your final video"
-    }
+      description: "Compiling everything into your final video",
+    },
   ]
 
   return (
@@ -64,7 +82,7 @@ export default function VideoGenerationStatus({ progress, currentStep }: VideoGe
         <CardTitle className="flex items-center">
           <Film className="h-5 w-5 text-pink-400 mr-2" />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-purple-200">
-            Generating Your Video
+            {sceneId ? `Generating Scene ${sceneId} Video` : "Generating Your Video"}
           </span>
         </CardTitle>
       </CardHeader>
@@ -80,18 +98,18 @@ export default function VideoGenerationStatus({ progress, currentStep }: VideoGe
             className="h-3 bg-white/10"
             indicatorClassName="bg-gradient-to-r from-pink-500 to-violet-500"
           />
-          
+
           {/* Animated progress glow */}
-          <motion.div 
+          <motion.div
             className="absolute top-1/2 -translate-y-1/2 h-8 w-8 rounded-full bg-gradient-to-r from-pink-500 to-violet-500 opacity-50 blur-md"
             initial={{ left: "0%" }}
             animate={{ left: `${progress}%` }}
             transition={{ duration: 0.5 }}
           />
-          
+
           {/* Current operation text */}
           <AnimatePresence mode="wait">
-            <motion.div 
+            <motion.div
               key={progressText}
               initial={{ opacity: 0, y: 5 }}
               animate={{ opacity: 1, y: 0 }}
@@ -102,51 +120,61 @@ export default function VideoGenerationStatus({ progress, currentStep }: VideoGe
               {progressText}
             </motion.div>
           </AnimatePresence>
+
+          {/* Elapsed time */}
+          <div className="mt-1 text-xs text-white/60">Elapsed time: {formatTime(elapsedTime)}</div>
+
+          {/* Note about video generation */}
+          {progress > 50 && progress < 95 && (
+            <div className="mt-2 text-xs text-yellow-300/90 bg-yellow-500/10 p-2 rounded-md border border-yellow-500/20">
+              Note: Video generation can take 1-2 minutes. Each scene is limited to 5 seconds maximum.
+            </div>
+          )}
         </div>
 
         {/* Animated video preview placeholder */}
         <div className="mb-8 relative overflow-hidden rounded-lg aspect-video bg-black/30 border border-white/10">
           <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10"></div>
-          
+
           {/* Animated particles */}
           <div className="absolute inset-0 overflow-hidden">
             {[...Array(20)].map((_, i) => (
               <motion.div
                 key={i}
                 className="absolute w-1 h-1 bg-white rounded-full"
-                initial={{ 
-                  x: Math.random() * 100 + "%", 
-                  y: Math.random() * 100 + "%", 
-                  opacity: 0 
+                initial={{
+                  x: Math.random() * 100 + "%",
+                  y: Math.random() * 100 + "%",
+                  opacity: 0,
                 }}
-                animate={{ 
-                  x: Math.random() * 100 + "%", 
-                  y: Math.random() * 100 + "%", 
-                  opacity: [0, 0.8, 0] 
+                animate={{
+                  x: Math.random() * 100 + "%",
+                  y: Math.random() * 100 + "%",
+                  opacity: [0, 0.8, 0],
                 }}
-                transition={{ 
-                  duration: 2 + Math.random() * 3, 
-                  repeat: Infinity, 
-                  repeatType: "loop" 
+                transition={{
+                  duration: 2 + Math.random() * 3,
+                  repeat: Number.POSITIVE_INFINITY,
+                  repeatType: "loop",
                 }}
               />
             ))}
           </div>
-          
+
           {/* Center loading spinner */}
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="relative">
-              <motion.div 
+              <motion.div
                 className="w-16 h-16 rounded-full border-4 border-purple-500/30 border-t-purple-500 border-r-pink-500"
                 animate={{ rotate: 360 }}
-                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
               />
               <div className="absolute inset-0 flex items-center justify-center">
                 <Sparkles className="h-6 w-6 text-white/80" />
               </div>
             </div>
           </div>
-          
+
           {/* Status text */}
           <div className="absolute bottom-3 left-0 right-0 text-center">
             <div className="inline-block px-3 py-1 bg-black/50 backdrop-blur-sm rounded-full text-xs text-white/80">
@@ -216,8 +244,10 @@ export default function VideoGenerationStatus({ progress, currentStep }: VideoGe
 
         <div className="mt-6 text-center text-white/70 text-sm">
           <p>This may take a few minutes. Please don't close this window.</p>
+          {sceneId && <p className="mt-1 text-pink-300">Generating video for Scene {sceneId} only.</p>}
         </div>
       </CardContent>
     </Card>
   )
 }
+

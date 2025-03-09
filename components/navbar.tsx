@@ -35,7 +35,7 @@ export default function Navbar() {
 
           <div className="flex gap-4">
             <Link href="/chat">
-              <Button variant="outline" className="text-white border-purple-500 hover:bg-purple-900">
+              <Button variant="outline" className="text-wh border-purple-500 hover:bg-purple-900">
                 Try Now
               </Button>
             </Link>

@@ -57,7 +57,7 @@ export default function HeroSection() {
                 Create Your First Video
               </Button>
             </Link>
-            <Button variant="outline" className="text-white border-purple-500 hover:bg-purple-900 text-lg py-6 px-8">
+            <Button variant="outline" className="text- border-purple-500 hover:bg-purple-900 text-lg py-6 px-8">
               Watch Demo
             </Button>
           </div>

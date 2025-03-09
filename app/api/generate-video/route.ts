@@ -33,20 +33,35 @@ export async function POST(req: NextRequest) {
     // In a production app, you could generate multiple videos (one per scene) and use a video stitching service
     const scene = scenes[0]
     const sceneDescription = scene.description
-    const visualElements = scene.visualElements ? scene.visualElements.join(", ") : ""
 
-    // Create a detailed prompt combining the scene description and visual elements
-    const prompt = `${sceneDescription} ${visualElements ? `Including: ${visualElements}` : ""}`
+    // Process visual elements - limit to 3 most important ones to avoid prompt being too long
+    let visualElements = ""
+    if (scene.visualElements && scene.visualElements.length > 0) {
+      const limitedElements = scene.visualElements.slice(0, 3)
+      visualElements = limitedElements.join(", ")
+    }
+
+    // Create a simplified prompt - keep it under 200 characters to avoid API errors
+    // The fal.ai/veo2 model seems to have issues with very long prompts
+    let prompt = sceneDescription
+    if (visualElements) {
+      prompt += ` Including: ${visualElements}`
+    }
+
+    // Truncate prompt if it's too long (200 chars max)
+    if (prompt.length > 200) {
+      prompt = prompt.substring(0, 197) + "..."
+    }
 
     console.log("🚀 Sending request to fal-ai/veo2...")
     console.log("Prompt:", prompt)
 
-    // Use the veo2 model as requested
+    // Use the veo2 model with simplified parameters
     const result = await fal.subscribe("fal-ai/veo2", {
       input: {
         prompt: prompt,
-        negative_prompt: "poor quality, blurry, distorted, text, watermark",
-        guidance_scale: 12.0,
+        negative_prompt: "poor quality, blurry, distorted",
+        guidance_scale: 10.0,
         seed: Math.floor(Math.random() * 10000000),
       },
       logs: true,
@@ -93,8 +108,7 @@ export async function POST(req: NextRequest) {
       thumbnailUrl: thumbnailUrl,
       duration: 5, // Fixed duration of 5 seconds for veo2 model
       message: "Video generated successfully using veo2 model",
-      modelLimitation:
-        "The veo2 model is currently limited to generating 5-second videos regardless of requested duration.",
+      modelLimitation: "Each scene is limited to 5 seconds maximum due to AI model constraints.",
     })
   } catch (error) {
     console.error("❌ Unexpected error:", error)
@@ -110,6 +124,8 @@ export async function POST(req: NextRequest) {
       errorMessage = "API key is invalid or expired. Please check your API key."
     } else if (errorDetails.includes("429") || errorDetails.includes("Too Many Requests")) {
       errorMessage = "Rate limit exceeded. Please try again later."
+    } else if (errorDetails.includes("400") || errorDetails.includes("Bad Request")) {
+      errorMessage = "The API rejected the request. The prompt may be too long or contain unsupported content."
     }
 
     return NextResponse.json(
