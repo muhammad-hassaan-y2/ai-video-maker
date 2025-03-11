@@ -3,17 +3,19 @@
 import { useState, useEffect, useCallback } from "react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
 import { AnimatePresence, motion } from "framer-motion"
-import { Sparkles } from 'lucide-react'
+import { Sparkles } from "lucide-react"
 import Navbar from "@/components/navbar"
-import ApiQuotaModal from "@/components/video-ai/api-quota-model";
-import VideoConfig from "@/components/video-ai/video-config";
-import ChatMessages from "@/components/video-ai/chat-messages";
+import ApiQuotaModal from "@/components/video-ai/api-quota-model"
+import VideoConfig from "@/components/video-ai/video-config"
+import ChatMessages from "@/components/video-ai/chat-messages"
 import ChatInput from "@/components/video-ai/chat-input"
 import ScenesPanel from "@/components/video-ai/scenes-panel"
 import TipsPanel from "@/components/video-ai/tips-panel"
 import { Toaster } from "@/components/ui/toaster"
 import { useToast } from "@/components/ui/use-toast"
-import { SavedVideo } from "@/components/video-ai/video-hisotry"
+import type { SavedVideo } from "@/components/video-ai/video-hisotry"
+import VideoHistorySection from "@/components/video-ai/video-hisotry-senction"
+import VideoPlayer from "@/components/video-ai/video-player"
 
 // Define types
 type Platform = "tiktok" | "youtube" | "youtube-shorts" | "instagram" | "instagram-reels"
@@ -49,6 +51,8 @@ export default function ChatPage() {
   const [apiQuotaInfo, setApiQuotaInfo] = useState({ isVisible: false })
   const [isClient, setIsClient] = useState(false)
   const [savedVideos, setSavedVideos] = useState<SavedVideo[]>([])
+  const [selectedHistoryVideo, setSelectedHistoryVideo] = useState<SavedVideo | null>(null)
+  const [isGeneratingVideo, setIsGeneratingVideo] = useState(false)
 
   // Fix hydration issues by only rendering on client
   useEffect(() => {
@@ -243,9 +247,10 @@ export default function ChatPage() {
       <div className="absolute inset-0 bg-[url('/placeholder.svg?height=100&width=100')] opacity-5"></div>
       <div className="absolute -top-40 -right-40 w-80 h-80 bg-pink-500 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
       <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
-      
-      <div className="mt-72"></div>
-      <Navbar />
+     <div className="mt-80">
+     <Navbar />
+
+     </div>
       <Toaster />
 
       {/* API Quota Info Modal */}
@@ -278,7 +283,7 @@ export default function ChatPage() {
                   </div>
                   <div>
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-purple-200">
-                      Chat with VideoGen AI
+                      Chat with Mistral AI
                     </span>
                     <CardDescription className="text-purple-200/80 mt-1">
                       Describe your video idea and I'll help you create it
@@ -338,7 +343,34 @@ export default function ChatPage() {
             )}
           </AnimatePresence>
         </div>
+
+        {/* Video History Section - Show below the chat */}
+        {savedVideos.length > 0 && !isGenerating && !selectedHistoryVideo && (
+          <VideoHistorySection
+            videos={savedVideos}
+            onSelectVideo={(video) => setSelectedHistoryVideo(video)}
+            onShowAllHistory={() => setIsSidePanelOpen(true)}
+          />
+        )}
+
+        {/* Display selected video from history */}
+        {selectedHistoryVideo && (
+          <div className="mt-6">
+            <VideoPlayer
+              videoUrl={selectedHistoryVideo.videoUrl}
+              thumbnailUrl={selectedHistoryVideo.thumbnailUrl}
+              title={selectedHistoryVideo.title}
+              onClose={() => setSelectedHistoryVideo(null)}
+              onBack={() => setSelectedHistoryVideo(null)}
+              onGenerateMore={() => {
+                setSelectedHistoryVideo(null)
+                setPrompt("Generate more scenes like the previous video")
+              }}
+            />
+          </div>
+        )}
       </main>
     </div>
   )
 }
+

@@ -21,6 +21,7 @@ interface SceneVideosPanelProps {
 }
 
 export default function SceneVideosPanel({ videos, onClose, onGenerateMore }: SceneVideosPanelProps) {
+  // Explicitly type the state to avoid TypeScript errors
   const [selectedVideo, setSelectedVideo] = useState<SceneVideo | null>(null)
   const [currentPage, setCurrentPage] = useState(0)
   const videosPerPage = 4
@@ -41,7 +42,7 @@ export default function SceneVideosPanel({ videos, onClose, onGenerateMore }: Sc
   }
 
   // If a video is selected, show the video player
-  if (selectedVideo) {
+  if (selectedVideo !== null) {
     return (
       <VideoPlayer
         videoUrl={selectedVideo.videoUrl}
