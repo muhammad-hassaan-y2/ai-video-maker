@@ -17,6 +17,7 @@ import {
   Save,
   ArrowLeft,
   History,
+  Trash2,
 } from "lucide-react"
 import { motion } from "framer-motion"
 import { toast } from "@/components/ui/use-toast"
@@ -29,6 +30,7 @@ interface VideoPlayerProps {
   onBack?: () => void
   onGenerateMore?: () => void
   onShowHistory?: () => void
+  onDeleteVideo?: () => void
 }
 
 export default function VideoPlayer({
@@ -39,6 +41,7 @@ export default function VideoPlayer({
   onBack,
   onGenerateMore,
   onShowHistory,
+  onDeleteVideo,
 }: VideoPlayerProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -169,6 +172,17 @@ export default function VideoPlayer({
     }, 1500)
   }
 
+  const handleDeleteVideo = () => {
+    if (onDeleteVideo) {
+      onDeleteVideo()
+      toast({
+        title: "Video Deleted",
+        description: "The video has been removed from your history.",
+        duration: 3000,
+      })
+    }
+  }
+
   // Create a placeholder background with CSS instead of using an image
   const placeholderStyle = {
     background: "linear-gradient(45deg, #1a1a2e, #16213e, #0f3460)",
@@ -293,10 +307,10 @@ export default function VideoPlayer({
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <Button variant="outline" className="text-blue-950 border-white/20 hover:bg-white/10" onClick={handleDownload}>
+        <div className="grid grid-cols-3 gap-4">
+          <Button variant="outline" className="text-white border-white/20 hover:bg-white/10" onClick={handleDownload}>
             <Download className="h-4 w-4 mr-2" />
-            Download Video
+            Download
           </Button>
 
           <Button
@@ -316,18 +330,29 @@ export default function VideoPlayer({
             ) : (
               <>
                 <Save className="h-4 w-4 mr-2" />
-                Save to Projects
+                Save
               </>
             )}
           </Button>
+
+          {onDeleteVideo && (
+            <Button
+              variant="outline"
+              className="text-red-400 border-red-400/20 hover:bg-red-500/10 hover:text-red-300"
+              onClick={handleDeleteVideo}
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              Delete
+            </Button>
+          )}
         </div>
       </CardContent>
 
       <CardFooter className="border-t border-white/10 p-4 flex justify-between">
         {onBack && (
-          <Button variant="outline" className="text-blue-950 border-white/20 hover:bg-white/10" onClick={onBack}>
+          <Button variant="outline" className="text-white border-white/20 hover:bg-white/10" onClick={onBack}>
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Scenes
+            Back
           </Button>
         )}
 

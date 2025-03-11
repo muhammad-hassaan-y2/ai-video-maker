@@ -4,7 +4,7 @@ import { useState } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { X, Play, ArrowLeft, ArrowRight, Film } from "lucide-react"
+import { X, Play, ArrowLeft, ArrowRight, Film, Trash2 } from "lucide-react"
 import VideoPlayer from "./video-player"
 
 export type SceneVideo = {
@@ -18,10 +18,10 @@ interface SceneVideosPanelProps {
   videos: SceneVideo[]
   onClose: () => void
   onGenerateMore: () => void
+  onDeleteVideo?: (sceneId: number) => void
 }
 
-export default function SceneVideosPanel({ videos, onClose, onGenerateMore }: SceneVideosPanelProps) {
-  // Explicitly type the state to avoid TypeScript errors
+export default function SceneVideosPanel({ videos, onClose, onGenerateMore, onDeleteVideo }: SceneVideosPanelProps) {
   const [selectedVideo, setSelectedVideo] = useState<SceneVideo | null>(null)
   const [currentPage, setCurrentPage] = useState(0)
   const videosPerPage = 4
@@ -41,6 +41,13 @@ export default function SceneVideosPanel({ videos, onClose, onGenerateMore }: Sc
     }
   }
 
+  const handleDeleteSelectedVideo = () => {
+    if (selectedVideo && onDeleteVideo) {
+      onDeleteVideo(selectedVideo.sceneId)
+      setSelectedVideo(null)
+    }
+  }
+
   // If a video is selected, show the video player
   if (selectedVideo !== null) {
     return (
@@ -51,6 +58,7 @@ export default function SceneVideosPanel({ videos, onClose, onGenerateMore }: Sc
         onClose={onClose}
         onBack={() => setSelectedVideo(null)}
         onGenerateMore={onGenerateMore}
+        onDeleteVideo={onDeleteVideo ? handleDeleteSelectedVideo : undefined}
       />
     )
   }
@@ -88,10 +96,9 @@ export default function SceneVideosPanel({ videos, onClose, onGenerateMore }: Sc
               animate={{ opacity: 1, y: 0 }}
               whileHover={{ scale: 1.03 }}
               transition={{ duration: 0.2 }}
-              className="relative rounded-lg overflow-hidden cursor-pointer group"
-              onClick={() => setSelectedVideo(video)}
+              className="relative rounded-lg overflow-hidden group"
             >
-              <div className="aspect-video bg-black/40 relative">
+              <div className="aspect-video bg-black/40 relative cursor-pointer" onClick={() => setSelectedVideo(video)}>
                 {video.thumbnailUrl ? (
                   <img
                     src={video.thumbnailUrl || "/placeholder.svg"}
@@ -115,6 +122,20 @@ export default function SceneVideosPanel({ videos, onClose, onGenerateMore }: Sc
                   <p className="text-white/70 text-sm truncate">{video.description}</p>
                 </div>
               </div>
+
+              {onDeleteVideo && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="absolute top-2 right-2 bg-black/50 text-red-400 hover:text-red-300 hover:bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onDeleteVideo(video.sceneId)
+                  }}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              )}
             </motion.div>
           ))}
         </div>

@@ -9,19 +9,35 @@ import { useState } from "react"
 import VideoPlayer from "./video-player"
 import type { SavedVideo } from "./video-hisotry"
 
+// Update the VideoHistorySectionProps interface to include onDeleteVideo
 interface VideoHistorySectionProps {
   videos: SavedVideo[]
   onSelectVideo: (video: SavedVideo) => void
   onShowAllHistory: () => void
+  onDeleteVideo?: (videoId: string) => void
 }
 
-export default function VideoHistorySection({ videos, onSelectVideo, onShowAllHistory }: VideoHistorySectionProps) {
+// Update the function signature to include the new prop
+export default function VideoHistorySection({
+  videos,
+  onSelectVideo,
+  onShowAllHistory,
+  onDeleteVideo,
+}: VideoHistorySectionProps) {
   const [selectedVideo, setSelectedVideo] = useState<SavedVideo | null>(null)
 
   // Show only the most recent 4 videos
   const recentVideos = videos.slice(0, 4)
 
-  // If a video is selected, show the video player
+  // Add a handler for deleting the selected video
+  const handleDeleteSelectedVideo = () => {
+    if (selectedVideo && onDeleteVideo) {
+      onDeleteVideo(selectedVideo.id)
+      setSelectedVideo(null)
+    }
+  }
+
+  // Update the VideoPlayer component to include onDeleteVideo
   if (selectedVideo) {
     return (
       <VideoPlayer
@@ -31,6 +47,7 @@ export default function VideoHistorySection({ videos, onSelectVideo, onShowAllHi
         onClose={() => setSelectedVideo(null)}
         onBack={() => setSelectedVideo(null)}
         onGenerateMore={() => {}}
+        onDeleteVideo={onDeleteVideo ? handleDeleteSelectedVideo : undefined}
       />
     )
   }

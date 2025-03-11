@@ -14,8 +14,9 @@ import TipsPanel from "@/components/video-ai/tips-panel"
 import { Toaster } from "@/components/ui/toaster"
 import { useToast } from "@/components/ui/use-toast"
 import type { SavedVideo } from "@/components/video-ai/video-hisotry"
-import VideoHistorySection from "@/components/video-ai/video-hisotry-senction"
+import VideoHistorySection from "@/components/video-ai/video-hisotry-section"
 import VideoPlayer from "@/components/video-ai/video-player"
+
 
 // Define types
 type Platform = "tiktok" | "youtube" | "youtube-shorts" | "instagram" | "instagram-reels"
@@ -226,11 +227,39 @@ export default function ChatPage() {
 
   const handleSaveVideo = useCallback(
     (video: SavedVideo) => {
+      // Check if this is a deletion notification (we're using a custom "deleted" flag)
+      if ("deleted" in video && video.deleted) {
+        // Handle deletion
+        setSavedVideos((prev) => prev.filter((v) => v.id !== video.id))
+
+        toast({
+          title: "Video Deleted",
+          description: "The video has been removed from your history.",
+          duration: 3000,
+        })
+        return
+      }
+
+      // Normal save operation
       setSavedVideos((prev) => [video, ...prev])
 
       toast({
         title: "Video Saved",
         description: "Your video has been added to your history.",
+        duration: 3000,
+      })
+    },
+    [toast],
+  )
+
+  // Add a function to handle video deletion
+  const handleDeleteVideo = useCallback(
+    (videoId: string) => {
+      setSavedVideos((prev) => prev.filter((video) => video.id !== videoId))
+
+      toast({
+        title: "Video Deleted",
+        description: "The video has been removed from your history.",
         duration: 3000,
       })
     },
@@ -247,10 +276,8 @@ export default function ChatPage() {
       <div className="absolute inset-0 bg-[url('/placeholder.svg?height=100&width=100')] opacity-5"></div>
       <div className="absolute -top-40 -right-40 w-80 h-80 bg-pink-500 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
       <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
-     <div className="mt-80">
-     <Navbar />
 
-     </div>
+      <Navbar />
       <Toaster />
 
       {/* API Quota Info Modal */}
@@ -350,6 +377,7 @@ export default function ChatPage() {
             videos={savedVideos}
             onSelectVideo={(video) => setSelectedHistoryVideo(video)}
             onShowAllHistory={() => setIsSidePanelOpen(true)}
+            onDeleteVideo={handleDeleteVideo}
           />
         )}
 
@@ -366,6 +394,10 @@ export default function ChatPage() {
                 setSelectedHistoryVideo(null)
                 setPrompt("Generate more scenes like the previous video")
               }}
+              onDeleteVideo={() => {
+                handleDeleteVideo(selectedHistoryVideo.id)
+                setSelectedHistoryVideo(null)
+              }}
             />
           </div>
         )}
@@ -373,4 +405,3 @@ export default function ChatPage() {
     </div>
   )
 }
-

@@ -3,13 +3,14 @@
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Video, Clock, X, AlertCircle, Sparkles, Edit, Plus, Trash2, Info, History, Check } from "lucide-react"
+import { Video, Clock, X, AlertCircle, Sparkles, Edit, Plus, Trash2, Info, History, Check, Film } from "lucide-react"
 import { useState, useEffect, useRef } from "react"
 import VideoPlayer from "./video-player"
 import VideoGenerationStatus from "./video-generation-status"
 import { toast } from "@/components/ui/use-toast"
 import { v4 as uuidv4 } from "uuid"
 import VideoHistory, { type SavedVideo } from "./video-hisotry"
+import SceneVideosPanel, { type SceneVideo } from "./scene-videos-panel"
 import { Textarea } from "@/components/ui/textarea"
 
 type VideoScene = {
@@ -51,6 +52,8 @@ export default function ScenesPanel({
   )
   const [showHistory, setShowHistory] = useState(false)
   const [currentVideo, setCurrentVideo] = useState<SavedVideo | null>(null)
+  const [sceneVideos, setSceneVideos] = useState<SceneVideo[]>([])
+  const [showSceneVideos, setShowSceneVideos] = useState(false)
   const editFormRef = useRef<HTMLDivElement>(null)
 
   // Update working scenes when scenes prop changes
@@ -138,9 +141,23 @@ export default function ScenesPanel({
         throw new Error(data.error || "Failed to generate video")
       }
 
-      // Set the video URL when ready
-      setVideoUrl(data.videoUrl)
-      setThumbnailUrl(data.thumbnailUrl || null)
+      // Add the generated video to the scene videos array
+      const newSceneVideo: SceneVideo = {
+        sceneId: sceneId,
+        videoUrl: data.videoUrl,
+        thumbnailUrl: data.thumbnailUrl || null,
+        description: sceneToGenerate.description,
+      }
+
+      setSceneVideos((prev) => {
+        // Replace if already exists, otherwise add
+        const exists = prev.some((v) => v.sceneId === sceneId)
+        if (exists) {
+          return prev.map((v) => (v.sceneId === sceneId ? newSceneVideo : v))
+        } else {
+          return [...prev, newSceneVideo]
+        }
+      })
 
       // Save the video to history
       const newVideo: SavedVideo = {
@@ -165,6 +182,12 @@ export default function ScenesPanel({
       setTimeout(() => {
         setIsGeneratingVideo(false)
         setGeneratingSceneId(null)
+
+        // Show the scene videos panel if we have more than one scene video
+        if (sceneVideos.length > 0) {
+          setShowSceneVideos(true)
+        }
+
         toast({
           title: "Scene Video Generated",
           description: `Your video for scene ${sceneId} has been generated successfully!`,
@@ -177,111 +200,6 @@ export default function ScenesPanel({
       setError(err instanceof Error ? err.message : "Failed to generate video")
       setIsGeneratingVideo(false)
       setGeneratingSceneId(null)
-
-      toast({
-        title: "Generation Failed",
-        description: err instanceof Error ? err.message : "Failed to generate video",
-        variant: "destructive",
-        duration: 5000,
-      })
-    }
-  }
-
-  // Function to handle video generation for all scenes
-  const handleGenerateAllScenesVideo = async () => {
-    if (!workingScenes || workingScenes.length === 0) {
-      setError("No scenes available to generate video")
-      return
-    }
-
-    setIsGeneratingVideo(true)
-    setGeneratingSceneId(null)
-    setError(null)
-    setGenerationProgress(0) // Start at 0%
-    setCurrentStep("Initializing generation")
-    setGenerationAttempts((prev) => prev + 1)
-
-    // Immediately start showing progress animation
-    const progressInterval = setInterval(() => {
-      setGenerationProgress((prev) => {
-        // Slow down progress as we get closer to 100%
-        const increment = prev < 30 ? 1 : prev < 60 ? 0.5 : prev < 90 ? 0.3 : 0.1
-        const newProgress = Math.min(95, prev + increment)
-
-        // Update the current step based on progress
-        if (prev < 25 && newProgress >= 25) {
-          setCurrentStep("Analyzing scenes")
-        } else if (prev < 50 && newProgress >= 50) {
-          setCurrentStep("Generating visuals")
-        } else if (prev < 75 && newProgress >= 75) {
-          setCurrentStep("Adding transitions")
-        } else if (prev < 90 && newProgress >= 90) {
-          setCurrentStep("Finalizing video")
-        }
-
-        return newProgress
-      })
-    }, 300)
-
-    try {
-      console.log("Sending scenes to API:", workingScenes)
-      const response = await fetch("/api/generate-video", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ scenes: workingScenes }),
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: "Unknown error" }))
-        throw new Error(errorData.error || `Failed to generate video: ${response.status} ${response.statusText}`)
-      }
-
-      const data = await response.json()
-      console.log("Video generation response:", data)
-
-      if (!data.success) {
-        throw new Error(data.error || "Failed to generate video")
-      }
-
-      // Set the video URL when ready
-      setVideoUrl(data.videoUrl)
-      setThumbnailUrl(data.thumbnailUrl || null)
-
-      // Save the video to history
-      const newVideo: SavedVideo = {
-        id: uuidv4(),
-        videoUrl: data.videoUrl,
-        thumbnailUrl: data.thumbnailUrl || null,
-        title: `Complete Video (${workingScenes.length} scenes)`,
-        description: workingScenes[0]?.description || "AI Generated Video",
-        duration: data.duration || 5,
-        createdAt: new Date(),
-        scenes: workingScenes,
-      }
-
-      onSaveVideo(newVideo)
-
-      // Complete the progress and clear the interval
-      clearInterval(progressInterval)
-      setGenerationProgress(100)
-      setCurrentStep("Video ready!")
-
-      // Small delay before showing the video
-      setTimeout(() => {
-        setIsGeneratingVideo(false)
-        toast({
-          title: "Video Generated",
-          description: `Your complete video has been generated successfully!`,
-          duration: 3000,
-        })
-      }, 1000)
-    } catch (err) {
-      console.error("Error generating video:", err)
-      clearInterval(progressInterval)
-      setError(err instanceof Error ? err.message : "Failed to generate video")
-      setIsGeneratingVideo(false)
 
       toast({
         title: "Generation Failed",
@@ -344,6 +262,10 @@ export default function ScenesPanel({
 
   const handleDeleteScene = (sceneId: number) => {
     setWorkingScenes((prev) => prev.filter((scene) => scene.id !== sceneId))
+
+    // Also remove any generated videos for this scene
+    setSceneVideos((prev) => prev.filter((video) => video.sceneId !== sceneId))
+
     toast({
       title: "Scene Deleted",
       description: "The scene has been removed from your storyboard.",
@@ -354,6 +276,7 @@ export default function ScenesPanel({
   const handleBackToScenes = () => {
     setVideoUrl(null)
     setCurrentVideo(null)
+    setShowSceneVideos(false)
   }
 
   const handleGenerateMore = () => {
@@ -381,9 +304,75 @@ export default function ScenesPanel({
     setShowHistory(false)
   }
 
+  const handleShowSceneVideos = () => {
+    if (sceneVideos.length > 0) {
+      setShowSceneVideos(true)
+    } else {
+      toast({
+        title: "No Scene Videos",
+        description: "Generate at least one scene video first.",
+        duration: 3000,
+      })
+    }
+  }
+
+  // Add this function to the ScenesPanel component
+  const handleDeleteVideo = (sceneId: number) => {
+    // Remove the video from sceneVideos
+    setSceneVideos((prev) => prev.filter((video) => video.sceneId !== sceneId))
+
+    // Also remove from savedVideos if needed
+    const videoToDelete = savedVideos.find(
+      (video) => video.scenes && video.scenes.length === 1 && video.scenes[0].id === sceneId,
+    )
+
+    // Change this:
+    // if (videoToDelete && onSaveVideo) {
+    //   // We're using onSaveVideo as a proxy to communicate with the parent component
+    //   // In a real app, you'd have a dedicated onDeleteVideo prop
+    //   const updatedVideos = savedVideos.filter(v => v.id !== videoToDelete.id)
+    //   localStorage.setItem("savedVideos", JSON.stringify(updatedVideos))
+    // }
+
+    // To this:
+    if (videoToDelete) {
+      // Remove the video from savedVideos
+      const updatedVideos = savedVideos.filter((v) => v.id !== videoToDelete.id)
+
+      // Update localStorage directly
+      localStorage.setItem("savedVideos", JSON.stringify(updatedVideos))
+
+      // Notify the parent component about the deletion
+      // We're using onSaveVideo as a proxy since we don't have a dedicated onDeleteVideo prop
+      // In a real app, you'd have a dedicated onDeleteVideo prop
+      onSaveVideo({ ...videoToDelete, deleted: true })
+    }
+
+    setVideoUrl(null)
+    setShowSceneVideos(false)
+
+    toast({
+      title: "Video Deleted",
+      description: "The video has been removed from your history.",
+      duration: 3000,
+    })
+  }
+
   // If we're showing the video history
   if (showHistory) {
     return <VideoHistory videos={savedVideos} onClose={handleCloseHistory} onSelectVideo={handleSelectVideo} />
+  }
+
+  // If we're showing the scene videos panel
+  if (showSceneVideos) {
+    return (
+      <SceneVideosPanel
+        videos={sceneVideos}
+        onClose={onClose}
+        onGenerateMore={handleGenerateMore}
+        onDeleteVideo={handleDeleteScene}
+      />
+    )
   }
 
   // If we have a selected video from history
@@ -427,34 +416,6 @@ export default function ScenesPanel({
         </motion.div>
       )}
 
-      {/* Video history */}
-      {showHistory && (
-        <VideoHistory videos={savedVideos} onClose={handleCloseHistory} onSelectVideo={handleSelectVideo} />
-      )}
-
-      {/* Selected video from history */}
-      {currentVideo && (
-        <VideoPlayer
-          videoUrl={currentVideo.videoUrl}
-          thumbnailUrl={currentVideo.thumbnailUrl}
-          title={currentVideo.title}
-          onClose={onClose}
-          onBack={handleBackToScenes}
-          onGenerateMore={handleGenerateMore}
-        />
-      )}
-
-      {/* Generated video */}
-      {videoUrl && !currentVideo && (
-        <VideoPlayer
-          videoUrl={videoUrl}
-          thumbnailUrl={thumbnailUrl}
-          onClose={onClose}
-          onBack={handleBackToScenes}
-          onGenerateMore={handleGenerateMore}
-        />
-      )}
-
       {/* Scenes panel - always show unless replaced by video player or history */}
       {!showHistory && !currentVideo && !videoUrl && (
         <motion.div
@@ -477,6 +438,17 @@ export default function ScenesPanel({
                 </CardDescription>
               </div>
               <div className="flex items-center gap-2">
+                {sceneVideos.length > 0 && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-white/70 hover:text-white hover:bg-white/10"
+                    onClick={handleShowSceneVideos}
+                    title="View Scene Videos"
+                  >
+                    <Film className="h-4 w-4" />
+                  </Button>
+                )}
                 {savedVideos.length > 0 && (
                   <Button
                     variant="ghost"
@@ -538,6 +510,17 @@ export default function ScenesPanel({
                       <Info className="h-5 w-5 text-yellow-400 shrink-0 mt-0.5" />
                       <span>{modelLimitation}</span>
                     </div>
+                  )}
+
+                  {/* Scene videos button */}
+                  {sceneVideos.length > 0 && (
+                    <Button
+                      className="w-full bg-gradient-to-r from-pink-500 to-violet-500 hover:from-pink-600 hover:to-violet-600"
+                      onClick={handleShowSceneVideos}
+                    >
+                      <Film className="h-4 w-4 mr-2" />
+                      View Generated Scene Videos ({sceneVideos.length})
+                    </Button>
                   )}
 
                   {/* Video history button for mobile */}
@@ -704,15 +687,22 @@ export default function ScenesPanel({
                       <span>{error}</span>
                     </div>
                   )}
-                  <Button
-                    className="w-full bg-gradient-to-r from-pink-500 to-violet-500 hover:from-pink-600 hover:to-violet-600 shadow-lg shadow-purple-700/30 py-6 text-lg font-medium transition-all duration-300 hover:scale-[1.02]"
-                    onClick={handleGenerateAllScenesVideo}
-                    disabled={isGeneratingVideo || !workingScenes || workingScenes.length === 0}
-                    type="button"
-                  >
-                    <Sparkles className="h-5 w-5 mr-2" />
-                    Generate Complete Video
-                  </Button>
+
+                  {/* View Scene Videos button instead of Generate Complete Video */}
+                  {sceneVideos.length > 0 ? (
+                    <Button
+                      className="w-full bg-gradient-to-r from-pink-500 to-violet-500 hover:from-pink-600 hover:to-violet-600 shadow-lg shadow-purple-700/30 py-6 text-lg font-medium transition-all duration-300 hover:scale-[1.02]"
+                      onClick={handleShowSceneVideos}
+                      type="button"
+                    >
+                      <Film className="h-5 w-5 mr-2" />
+                      View All Generated Scene Videos ({sceneVideos.length})
+                    </Button>
+                  ) : (
+                    <div className="w-full p-4 text-center text-white/70">
+                      Generate individual scene videos using the "Generate This Scene" buttons above
+                    </div>
+                  )}
                 </CardFooter>
               </>
             )}
