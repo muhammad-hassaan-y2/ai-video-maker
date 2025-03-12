@@ -17,7 +17,6 @@ import type { SavedVideo } from "@/components/video-ai/video-hisotry"
 import VideoHistorySection from "@/components/video-ai/video-hisotry-section"
 import VideoPlayer from "@/components/video-ai/video-player"
 
-
 // Define types
 type Platform = "tiktok" | "youtube" | "youtube-shorts" | "instagram" | "instagram-reels"
 
@@ -33,6 +32,16 @@ type Message = {
   content: string
   scenes?: VideoScene[]
 }
+
+interface VideoData {
+  id: string
+  createdAt: Date
+  [key: string]: any
+}
+
+// If this is a Next.js session, we should properly type it
+import type { Session } from "next-auth"
+import { useSession } from "next-auth/react"
 
 export default function ChatPage() {
   const { toast } = useToast()
@@ -53,7 +62,13 @@ export default function ChatPage() {
   const [isClient, setIsClient] = useState(false)
   const [savedVideos, setSavedVideos] = useState<SavedVideo[]>([])
   const [selectedHistoryVideo, setSelectedHistoryVideo] = useState<SavedVideo | null>(null)
-  const [isGeneratingVideo, setIsGeneratingVideo] = useState(false)
+  // Removed unused state variables: isGeneratingVideo and setIsGeneratingVideo
+
+  // Initialize session state outside of useEffect to avoid conditional hook call
+  const { data: session, status } = useSession() as {
+    data: Session | null
+    status: "loading" | "authenticated" | "unauthenticated"
+  }
 
   // Fix hydration issues by only rendering on client
   useEffect(() => {
@@ -65,7 +80,7 @@ export default function ChatPage() {
       try {
         const parsedVideos = JSON.parse(storedVideos)
         // Convert string dates back to Date objects
-        const videosWithDates = parsedVideos.map((video: any) => ({
+        const videosWithDates = parsedVideos.map((video: VideoData) => ({
           ...video,
           createdAt: new Date(video.createdAt),
         }))
@@ -160,7 +175,7 @@ export default function ChatPage() {
       // Make sure scenes are properly formatted
       if (data.scenes && Array.isArray(data.scenes) && data.scenes.length > 0) {
         // Ensure each scene has the required properties
-        const validScenes = data.scenes.map((scene: any, index: number) => ({
+        const validScenes = data.scenes.map((scene: VideoScene, index: number) => ({
           id: scene.id || index + 1,
           description: scene.description || "Scene description",
           duration: scene.duration || `${Math.floor(videoLength / data.scenes.length)} seconds`,
@@ -192,7 +207,7 @@ export default function ChatPage() {
         ...prev,
         {
           role: "assistant",
-          content: `I'm sorry, I encountered an error while processing your request: ${error instanceof Error ? error.message : "Unknown error"}. Please try again.`,
+          content: `I&apos;m sorry, I encountered an error while processing your request: ${error instanceof Error ? error.message : "Unknown error"}. Please try again.`,
         },
       ])
 
@@ -277,7 +292,7 @@ export default function ChatPage() {
       <div className="absolute -top-40 -right-40 w-80 h-80 bg-pink-500 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
       <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
 
-      <div className="mt-40">
+      <div className="mt-">
         <Navbar />
       </div>
       <Toaster />
@@ -315,7 +330,7 @@ export default function ChatPage() {
                       Chat with Mistral AI
                     </span>
                     <CardDescription className="text-purple-200/80 mt-1">
-                      Describe your video idea and I'll help you create it
+                      Describe your video idea and I&apos;ll help you create it
                     </CardDescription>
                   </div>
                 </CardTitle>
@@ -407,3 +422,4 @@ export default function ChatPage() {
     </div>
   )
 }
+

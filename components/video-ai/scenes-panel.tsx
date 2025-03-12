@@ -38,7 +38,7 @@ export default function ScenesPanel({
   const [isGeneratingVideo, setIsGeneratingVideo] = useState(false)
   const [generatingSceneId, setGeneratingSceneId] = useState<number | null>(null)
   const [videoUrl, setVideoUrl] = useState<string | null>(null)
-  const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null)
+  const [thumbnailUrl] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [generationProgress, setGenerationProgress] = useState(0)
   const [currentStep, setCurrentStep] = useState("Preparing scenes")
@@ -47,7 +47,7 @@ export default function ScenesPanel({
   const [editedVisualElements, setEditedVisualElements] = useState("")
   const [workingScenes, setWorkingScenes] = useState<VideoScene[]>(scenes)
   const [generationAttempts, setGenerationAttempts] = useState(0)
-  const [modelLimitation, setModelLimitation] = useState<string | null>(
+  const [modelLimitation] = useState<string | null>(
     "Note: Each scene is limited to 5 seconds maximum due to AI model constraints.",
   )
   const [showHistory, setShowHistory] = useState(false)

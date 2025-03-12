@@ -53,7 +53,7 @@ export default function ApiQuotaModal({ isVisible, onClose }: ApiQuotaModalProps
                 Mistral AI Console
               </a>
             </li>
-            <li>Navigate to the "API Keys" section</li>
+            <li>Navigate to the &quot;API Keys&quot; section</li>
             <li>View your usage statistics and remaining quota</li>
           </ol>
           <p>The free tier typically includes:</p>

@@ -90,7 +90,7 @@ export default function TestimonialsSection() {
                   />
                 ))}
               </div>
-              <p className="text-white/80 italic">"{testimonial.quote}"</p>
+              <p className="text-white/80 italic">&quot;{testimonial.quote}&quot;</p>
             </motion.div>
           ))}
         </div>

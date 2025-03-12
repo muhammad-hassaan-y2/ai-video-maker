@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { X, Play, Clock, Calendar, ArrowLeft, ArrowRight } from "lucide-react"
 import { format } from "date-fns"
+import Image from "next/image"
 
 export type SavedVideo = {
   id: string
@@ -15,8 +16,8 @@ export type SavedVideo = {
   description?: string
   duration: number
   createdAt: Date
-  scenes?: any[]
-  deleted?: boolean // Add this optional flag
+  scenes?: Record<string, unknown>[]
+  deleted?: boolean
 }
 
 interface VideoHistoryProps {
@@ -87,10 +88,12 @@ export default function VideoHistory({ videos, onClose, onSelectVideo }: VideoHi
               >
                 <div className="aspect-video bg-black/40 relative">
                   {video.thumbnailUrl ? (
-                    <img
+                    <Image
                       src={video.thumbnailUrl || "/placeholder.svg"}
                       alt={video.title}
                       className="w-full h-full object-cover"
+                      width={300}
+                      height={200}
                     />
                   ) : (
                     <div className="absolute inset-0 bg-gradient-to-br from-purple-900/50 to-pink-900/50 flex items-center justify-center">
@@ -156,4 +159,3 @@ export default function VideoHistory({ videos, onClose, onSelectVideo }: VideoHi
     </Card>
   )
 }
-

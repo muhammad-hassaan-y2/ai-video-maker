@@ -243,7 +243,7 @@ export default function VideoGenerationStatus({ progress, currentStep, sceneId }
         </div>
 
         <div className="mt-6 text-center text-white/70 text-sm">
-          <p>This may take a few minutes. Please don't close this window.</p>
+          <p>This may take a few minutes. Please don&apos;t t close this window.</p>
           {sceneId && <p className="mt-1 text-pink-300">Generating video for Scene {sceneId} only.</p>}
         </div>
       </CardContent>

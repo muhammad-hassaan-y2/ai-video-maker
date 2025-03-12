@@ -79,7 +79,19 @@ export async function POST(req: NextRequest) {
     let thumbnailUrl = null
 
     // Type assertion to access properties dynamically
-    const data = result.data as any
+    interface VideoResponseData {
+      video?: { url: string }
+      thumbnail?: { url: string }
+      output?: {
+        video: string
+        thumbnail?: string
+      }
+      url?: string
+      images?: string[]
+      [key: string]: unknown
+    }
+
+    const data = result.data as VideoResponseData
 
     // Handle different response formats
     if (data.video?.url) {
