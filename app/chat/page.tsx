@@ -277,7 +277,9 @@ export default function ChatPage() {
       <div className="absolute -top-40 -right-40 w-80 h-80 bg-pink-500 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
       <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
 
-      <Navbar />
+      <div className="mt-40">
+        <Navbar />
+      </div>
       <Toaster />
 
       {/* API Quota Info Modal */}
