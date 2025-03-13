@@ -82,6 +82,8 @@ export default function ScenesPanel({
     return duration
   }
 
+  console.log(generationAttempts)
+
   // Function to handle video generation for a specific scene
   const handleGenerateSceneVideo = async (sceneId: number) => {
     const sceneToGenerate = workingScenes.find((scene) => scene.id === sceneId)
@@ -316,47 +318,47 @@ export default function ScenesPanel({
     }
   }
 
-  // Add this function to the ScenesPanel component
-  const handleDeleteVideo = (sceneId: number) => {
-    // Remove the video from sceneVideos
-    setSceneVideos((prev) => prev.filter((video) => video.sceneId !== sceneId))
+  // // Add this function to the ScenesPanel component
+  // const handleDeleteVideo = (sceneId: number) => {
+  //   // Remove the video from sceneVideos
+  //   setSceneVideos((prev) => prev.filter((video) => video.sceneId !== sceneId))
 
-    // Also remove from savedVideos if needed
-    const videoToDelete = savedVideos.find(
-      (video) => video.scenes && video.scenes.length === 1 && video.scenes[0].id === sceneId,
-    )
+  //   // Also remove from savedVideos if needed
+  //   const videoToDelete = savedVideos.find(
+  //     (video) => video.scenes && video.scenes.length === 1 && video.scenes[0].id === sceneId,
+  //   )
 
-    // Change this:
-    // if (videoToDelete && onSaveVideo) {
-    //   // We're using onSaveVideo as a proxy to communicate with the parent component
-    //   // In a real app, you'd have a dedicated onDeleteVideo prop
-    //   const updatedVideos = savedVideos.filter(v => v.id !== videoToDelete.id)
-    //   localStorage.setItem("savedVideos", JSON.stringify(updatedVideos))
-    // }
+  //   // Change this:
+  //   // if (videoToDelete && onSaveVideo) {
+  //   //   // We're using onSaveVideo as a proxy to communicate with the parent component
+  //   //   // In a real app, you'd have a dedicated onDeleteVideo prop
+  //   //   const updatedVideos = savedVideos.filter(v => v.id !== videoToDelete.id)
+  //   //   localStorage.setItem("savedVideos", JSON.stringify(updatedVideos))
+  //   // }
 
-    // To this:
-    if (videoToDelete) {
-      // Remove the video from savedVideos
-      const updatedVideos = savedVideos.filter((v) => v.id !== videoToDelete.id)
+  //   // To this:
+  //   if (videoToDelete) {
+  //     // Remove the video from savedVideos
+  //     const updatedVideos = savedVideos.filter((v) => v.id !== videoToDelete.id)
 
-      // Update localStorage directly
-      localStorage.setItem("savedVideos", JSON.stringify(updatedVideos))
+  //     // Update localStorage directly
+  //     localStorage.setItem("savedVideos", JSON.stringify(updatedVideos))
 
-      // Notify the parent component about the deletion
-      // We're using onSaveVideo as a proxy since we don't have a dedicated onDeleteVideo prop
-      // In a real app, you'd have a dedicated onDeleteVideo prop
-      onSaveVideo({ ...videoToDelete, deleted: true })
-    }
+  //     // Notify the parent component about the deletion
+  //     // We're using onSaveVideo as a proxy since we don't have a dedicated onDeleteVideo prop
+  //     // In a real app, you'd have a dedicated onDeleteVideo prop
+  //     onSaveVideo({ ...videoToDelete, deleted: true })
+  //   }
 
-    setVideoUrl(null)
-    setShowSceneVideos(false)
+  //   setVideoUrl(null)
+  //   setShowSceneVideos(false)
 
-    toast({
-      title: "Video Deleted",
-      description: "The video has been removed from your history.",
-      duration: 3000,
-    })
-  }
+  //   toast({
+  //     title: "Video Deleted",
+  //     description: "The video has been removed from your history.",
+  //     duration: 3000,
+  //   })
+  // }
 
   // If we're showing the video history
   if (showHistory) {
@@ -700,7 +702,7 @@ export default function ScenesPanel({
                     </Button>
                   ) : (
                     <div className="w-full p-4 text-center text-white/70">
-                      Generate individual scene videos using the "Generate This Scene" buttons above
+                      {`Generate individual scene videos using the "Generate This Scene" buttons above`}
                     </div>
                   )}
                 </CardFooter>

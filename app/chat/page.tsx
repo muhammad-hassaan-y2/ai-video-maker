@@ -36,12 +36,11 @@ type Message = {
 interface VideoData {
   id: string
   createdAt: Date
-  [key: string]: any
+  title: string
+  videoUrl: string
+  thumbnailUrl: string
+  // Add other specific properties as needed
 }
-
-// If this is a Next.js session, we should properly type it
-import type { Session } from "next-auth"
-import { useSession } from "next-auth/react"
 
 export default function ChatPage() {
   const { toast } = useToast()
@@ -65,10 +64,10 @@ export default function ChatPage() {
   // Removed unused state variables: isGeneratingVideo and setIsGeneratingVideo
 
   // Initialize session state outside of useEffect to avoid conditional hook call
-  const { data: session, status } = useSession() as {
-    data: Session | null
-    status: "loading" | "authenticated" | "unauthenticated"
-  }
+  // const { data: session, status } = useSession() as {
+  //   data: Session | null
+  //   status: "loading" | "authenticated" | "unauthenticated"
+  // }
 
   // Fix hydration issues by only rendering on client
   useEffect(() => {

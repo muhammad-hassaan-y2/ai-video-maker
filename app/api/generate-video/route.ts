@@ -2,12 +2,12 @@ import { type NextRequest, NextResponse } from "next/server"
 import { fal } from "@fal-ai/client"
 
 // Define the type for a video scene
-type VideoScene = {
-  id: number
-  description: string
-  duration: string
-  visualElements: string[]
-}
+// type VideoScene = {
+//   id: number
+//   description: string
+//   duration: string
+//   visualElements: string[]
+// }
 
 export async function POST(req: NextRequest) {
   try {
