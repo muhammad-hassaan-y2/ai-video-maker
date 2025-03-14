@@ -2,7 +2,7 @@
 
 import { useRef, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Video } from "lucide-react"
+import { Video, Search } from "lucide-react"
 
 type VideoScene = {
   id: number
@@ -15,6 +15,7 @@ type Message = {
   role: "user" | "assistant"
   content: string
   scenes?: VideoScene[]
+  searchUsed?: boolean
 }
 
 interface ChatMessagesProps {
@@ -50,6 +51,15 @@ export default function ChatMessages({ messages, isGenerating, onSceneClick }: C
             >
               <div className="flex flex-col">
                 <div>{message.content}</div>
+
+                {message.searchUsed && (
+                  <div className="mt-2 flex items-center gap-2 bg-blue-500/20 p-2 rounded-lg">
+                    <Search className="h-4 w-4 text-blue-300" />
+                    <span className="text-xs font-medium text-blue-300">
+                      Search was used to find the latest information
+                    </span>
+                  </div>
+                )}
 
                 {message.scenes && message.scenes.length > 0 && (
                   <div

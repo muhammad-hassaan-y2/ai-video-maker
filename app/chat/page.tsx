@@ -31,16 +31,18 @@ type Message = {
   role: "user" | "assistant"
   content: string
   scenes?: VideoScene[]
+  searchUsed?: boolean
 }
 
 interface VideoData {
   id: string
   createdAt: Date
-  title: string
-  videoUrl: string
-  thumbnailUrl: string
-  // Add other specific properties as needed
+  [key: string]: any
 }
+
+// If this is a Next.js session, we should properly type it
+import type { Session } from "next-auth"
+import { useSession } from "next-auth/react"
 
 export default function ChatPage() {
   const { toast } = useToast()
@@ -64,11 +66,7 @@ export default function ChatPage() {
   // Removed unused state variables: isGeneratingVideo and setIsGeneratingVideo
 
   // Initialize session state outside of useEffect to avoid conditional hook call
-  // const { data: session, status } = useSession() as {
-  //   data: Session | null
-  //   status: "loading" | "authenticated" | "unauthenticated"
-  // }
-
+ 
   // Fix hydration issues by only rendering on client
   useEffect(() => {
     setIsClient(true)
@@ -169,6 +167,7 @@ export default function ChatPage() {
       const aiResponse: Message = {
         role: "assistant",
         content: data.response || "I've created some scenes for your video!",
+        searchUsed: data.searchUsed || false,
       }
 
       // Make sure scenes are properly formatted
@@ -291,7 +290,7 @@ export default function ChatPage() {
       <div className="absolute -top-40 -right-40 w-80 h-80 bg-pink-500 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
       <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
 
-      <div className="mt-">
+      <div className="mt-96">
         <Navbar />
       </div>
       <Toaster />

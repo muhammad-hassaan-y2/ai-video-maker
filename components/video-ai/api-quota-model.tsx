@@ -65,6 +65,25 @@ export default function ApiQuotaModal({ isVisible, onClose }: ApiQuotaModalProps
             If you exceed your quota, API calls will return an error until the quota resets or you upgrade your plan.
           </p>
         </div>
+
+        <div className="space-y-4">
+          <p>You can also monitor your Serper API quota usage:</p>
+          <ol className="list-decimal pl-5 space-y-2">
+            <li>
+              Go to{" "}
+              <a
+                href="https://serper.dev/dashboard"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 underline"
+              >
+                Serper Dashboard
+              </a>
+            </li>
+            <li>Navigate to the "API Usage" section</li>
+            <li>View your usage statistics and remaining quota</li>
+          </ol>
+        </div>
       </motion.div>
     </motion.div>
   )
