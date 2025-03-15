@@ -308,7 +308,7 @@ export default function VideoPlayer({
         </div>
 
         <div className="grid grid-cols-3 gap-4">
-          <Button variant="outline" className="text-white border-white/20 hover:bg-white/10" onClick={handleDownload}>
+          <Button variant="outline" className="text-whit border-white/20 hover:bg-white/10" onClick={handleDownload}>
             <Download className="h-4 w-4 mr-2" />
             Download
           </Button>
@@ -350,7 +350,7 @@ export default function VideoPlayer({
 
       <CardFooter className="border-t border-white/10 p-4 flex justify-between">
         {onBack && (
-          <Button variant="outline" className="text-white border-white/20 hover:bg-white/10" onClick={onBack}>
+          <Button variant="outline" className="text-whit border-white/20 hover:bg-white/10" onClick={onBack}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
           </Button>

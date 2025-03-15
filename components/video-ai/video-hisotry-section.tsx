@@ -69,7 +69,7 @@ export default function VideoHistorySection({
           <Button
             variant="outline"
             size="sm"
-            className="text-white border-white/20 hover:bg-white/10"
+            className="text- border-white/20 hover:bg-white/10"
             onClick={onShowAllHistory}
           >
             View All History
