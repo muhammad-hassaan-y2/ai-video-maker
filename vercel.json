@@ -2,6 +2,12 @@
     "functions": {
         "api/generate-video": {
             "maxDuration": 60
+        },
+        "api/search": {
+            "maxDuration": 60
+        },
+        "api/chat": {
+            "maxDuration": 60
         }
     }
 }
