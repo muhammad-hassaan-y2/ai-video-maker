@@ -52,9 +52,17 @@ async function performSearch(query: string): Promise<string> {
       return "No relevant search results found."
     }
 
-    // Format search results into a string
-    const formattedResults = data.searchResults.map((result: any) => `[${result.title}] ${result.snippet}`).join("\n\n")
+    interface SearchResult {
+      title: string;
+      snippet: string;
+    }    
 
+    // Format search results into a string
+    const formattedResults = data.searchResults.map((result: SearchResult) => 
+      `[${result.title}] ${result.snippet}`
+    ).join("\n\n");
+    
+   
     return `Here are some relevant search results:\n\n${formattedResults}`
   } catch (error) {
     console.error("Search error:", error)
@@ -110,14 +118,21 @@ Example scene format:
     console.log("Messages before history creation:", messages)
 
     // Format messages for Mistral API
-    const formattedMessages = [
+    type Message = {
+      role: "system" | "user" | "assistant";
+      content: string;
+    };
+    
+    const formattedMessages: Message[] = [
       { role: "system", content: systemPrompt },
-      ...messages.slice(0, -1).map((msg: any) => ({
+      ...messages.slice(0, -1).map((msg: Message) => ({
         role: msg.role,
         content: msg.content,
       })),
       { role: "user", content: lastUserMessage },
-    ]
+    ];
+    
+   
 
     console.log("Formatted messages for Mistral:", formattedMessages)
 

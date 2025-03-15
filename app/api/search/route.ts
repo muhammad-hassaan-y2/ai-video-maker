@@ -52,13 +52,21 @@ export async function POST(req: NextRequest) {
     const data = await response.json()
 
     // Extract and format the search results
+    interface SerperOrganicResult {
+      title: string
+      link: string
+      snippet: string
+    }
+   
+   
     const searchResults: SearchResult[] =
-      data.organic?.map((result: any, index: number) => ({
-        title: result.title,
-        link: result.link,
-        snippet: result.snippet,
-        position: index + 1,
-      })) || []
+  data.organic?.map((result: SerperOrganicResult, index: number) => ({
+    title: result.title,
+    link: result.link,
+    snippet: result.snippet,
+    position: index + 1,
+  })) || []
+
 
     return NextResponse.json({
       searchResults,

@@ -80,7 +80,7 @@ export default function ApiQuotaModal({ isVisible, onClose }: ApiQuotaModalProps
                 Serper Dashboard
               </a>
             </li>
-            <li>Navigate to the "API Usage" section</li>
+            <li>Navigate to the &quotAPI Usage&quot section</li>
             <li>View your usage statistics and remaining quota</li>
           </ol>
         </div>

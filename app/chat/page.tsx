@@ -37,12 +37,9 @@ type Message = {
 interface VideoData {
   id: string
   createdAt: Date
-  [key: string]: any
+  [key: string]: unknown
 }
 
-// If this is a Next.js session, we should properly type it
-import type { Session } from "next-auth"
-import { useSession } from "next-auth/react"
 
 export default function ChatPage() {
   const { toast } = useToast()
