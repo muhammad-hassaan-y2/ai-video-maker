@@ -37,8 +37,9 @@ type Message = {
 interface VideoData {
   id: string
   createdAt: Date
-  [key: string]: unknown
+  [key: string]: string | number | boolean | Date | object // Adjust based on your data structure
 }
+
 
 
 export default function ChatPage() {
@@ -64,6 +65,7 @@ export default function ChatPage() {
 
   // Initialize session state outside of useEffect to avoid conditional hook call
  
+
   // Fix hydration issues by only rendering on client
   useEffect(() => {
     setIsClient(true)
@@ -282,12 +284,8 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="min-h-screen  text-white relative overflow-hidden">
-      <div className="absolute inset-0 bg-[url('/placeholder.svg?height=100&width=100')] opacity-5"></div>
-      <div className="absolute -top-40 -right-40 w-80 h-80  rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
-      <div className="absolute -bottom-40 -left-40 w-80 h-80  rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
-
-      <div className="mt-96">
+    <div className="min-h-screen bg-white text-gray-800 relative overflow-hidden">
+      <div className="mt-">
         <Navbar />
       </div>
       <Toaster />
@@ -314,17 +312,15 @@ export default function ChatPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Chat Area - Always visible */}
           <div className="lg:col-span-2">
-            <Card className="bg-white/10 backdrop-blur-md border-purple-400/30 h-[60vh] flex flex-col shadow-xl shadow-purple-900/20 rounded-xl overflow-hidden">
-              <CardHeader className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 border-b border-white/10">
+            <Card className="bg-white border-gray-200 h-[60vh] flex flex-col shadow-md rounded-xl overflow-hidden">
+              <CardHeader className="bg-gray-50 border-b border-gray-200">
                 <CardTitle className="flex items-center">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-violet-500 flex items-center justify-center mr-3 shadow-lg shadow-purple-500/30 animate-pulse">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 flex items-center justify-center mr-3 shadow-md">
                     <Sparkles className="h-5 w-5 text-white" />
                   </div>
                   <div>
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-purple-200">
-                      Chat with Mistral AI
-                    </span>
-                    <CardDescription className="text-purple-200/80 mt-1">
+                    <span className="text-gray-800">Chat with Mistral AI</span>
+                    <CardDescription className="text-gray-500 mt-1">
                       Describe your video idea and I&apos;ll help you create it
                     </CardDescription>
                   </div>
@@ -333,7 +329,7 @@ export default function ChatPage() {
               <CardContent className="flex-grow overflow-y-auto p-4">
                 <ChatMessages messages={messages} isGenerating={isGenerating} onSceneClick={handleSceneClick} />
               </CardContent>
-              <CardFooter className="border-t border-white/10 p-4 bg-gradient-to-r from-purple-600/10 to-pink-600/10">
+              <CardFooter className="border-t border-gray-200 p-4 bg-gray-50">
                 <ChatInput
                   prompt={prompt}
                   setPrompt={setPrompt}

@@ -49,9 +49,7 @@ export default function VideoHistory({ videos, onClose, onSelectVideo }: VideoHi
     <Card className="bg-white border-yellow-400/30 shadow-xl shadow-blue-900/10 rounded-xl overflow-hidden h-[60vh] flex flex-col">
       <CardHeader className="bg-gradient-to-r from-yellow-50 to-blue-50 border-b border-yellow-200/50 flex flex-row justify-between items-center">
         <div>
-          <CardTitle className="text-gray-900 flex items-center">
-            Your Video History
-          </CardTitle>
+          <CardTitle className="text-gray-900">Your Video History</CardTitle>
           <CardDescription className="text-gray-600">
             {videos.length} {videos.length === 1 ? "video" : "videos"} generated
           </CardDescription>
@@ -65,7 +63,8 @@ export default function VideoHistory({ videos, onClose, onSelectVideo }: VideoHi
           <X className="h-4 w-4" />
         </Button>
       </CardHeader>
-      <CardContent className="overflow-y-auto p-4">
+
+      <CardContent className="flex-grow overflow-y-auto p-4">
         {videos.length === 0 ? (
           <div className="h-full flex items-center justify-center">
             <div className="text-center p-6">
@@ -74,7 +73,7 @@ export default function VideoHistory({ videos, onClose, onSelectVideo }: VideoHi
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {paginatedVideos.map((video) => (
               <motion.div
                 key={video.id}
@@ -95,7 +94,7 @@ export default function VideoHistory({ videos, onClose, onSelectVideo }: VideoHi
                       height={200}
                     />
                   ) : (
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-100 to-yellow-100 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-yellow-50 flex items-center justify-center">
                       <span className="text-gray-400">No thumbnail</span>
                     </div>
                   )}
@@ -125,33 +124,37 @@ export default function VideoHistory({ videos, onClose, onSelectVideo }: VideoHi
           </div>
         )}
       </CardContent>
-      <div className="p-4 border-t border-gray-200 flex justify-between items-center">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handlePrevPage}
-          disabled={currentPage === 0}
-          className="text-gray-700 border-gray-300 hover:bg-gray-100"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Previous
-        </Button>
 
-        <span className="text-gray-600 text-sm">
-          Page {currentPage + 1} of {totalPages}
-        </span>
+      {totalPages > 1 && (
+        <div className="p-4 border-t border-gray-200 flex justify-between items-center">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handlePrevPage}
+            disabled={currentPage === 0}
+            className="text-gray-700 border-gray-300 hover:bg-gray-100"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Previous
+          </Button>
 
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleNextPage}
-          disabled={currentPage === totalPages - 1}
-          className="text-gray-700 border-gray-300 hover:bg-gray-100"
-        >
-          Next
-          <ArrowRight className="h-4 w-4 ml-2" />
-        </Button>
-      </div>
+          <span className="text-gray-600 text-sm">
+            Page {currentPage + 1} of {totalPages}
+          </span>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages - 1}
+            className="text-gray-700 border-gray-300 hover:bg-gray-100"
+          >
+            Next
+            <ArrowRight className="h-4 w-4 ml-2" />
+          </Button>
+        </div>
+      )}
     </Card>
-  );
-};
+  )
+}
+

@@ -43,19 +43,19 @@ export default function ChatMessages({ messages, isGenerating, onSceneClick }: C
             className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
           >
             <div
-              className={`max-w-[80%] rounded-2xl px-4 py-3 shadow-lg ${
+              className={`max-w-[80%] rounded-2xl px-4 py-3 shadow-md ${
                 message.role === "user"
-                  ? "bg-gradient-to-r from-yellow-400 to-yellow-600 text-black shadow-yellow-700/20"
-                  : "bg-white/20 backdrop-blur-sm border border-white/20 text-white shadow-yellow-700/10"
+                  ? "bg-gradient-to-r from-yellow-400 to-yellow-600 text-white shadow-yellow-200"
+                  : "bg-gray-100 text-gray-800 shadow-gray-200"
               }`}
             >
               <div className="flex flex-col">
                 <div>{message.content}</div>
 
                 {message.searchUsed && (
-                  <div className="mt-2 flex items-center gap-2 bg-blue-500/20 p-2 rounded-lg">
-                    <Search className="h-4 w-4 text-blue-300" />
-                    <span className="text-xs font-medium text-blue-300">
+                  <div className="mt-2 flex items-center gap-2 bg-blue-100 p-2 rounded-lg">
+                    <Search className="h-4 w-4 text-blue-600" />
+                    <span className="text-xs font-medium text-blue-600">
                       Search was used to find the latest information
                     </span>
                   </div>
@@ -63,11 +63,11 @@ export default function ChatMessages({ messages, isGenerating, onSceneClick }: C
 
                 {message.scenes && message.scenes.length > 0 && (
                   <div
-                    className="mt-2 flex items-center gap-2 bg-white/10 p-2 rounded-lg cursor-pointer hover:bg-white/20 transition-colors"
+                    className="mt-2 flex items-center gap-2 bg-gray-200 p-2 rounded-lg cursor-pointer hover:bg-gray-300 transition-colors"
                     onClick={() => onSceneClick(message.scenes || [])}
                   >
-                    <Video className="h-4 w-4 text-pink-300" />
-                    <span className="text-sm font-medium text-yellow-300">
+                    <Video className="h-4 w-4 text-yellow-600" />
+                    <span className="text-sm font-medium text-gray-800">
                       {message.scenes.length} scenes generated - Click to view
                     </span>
                   </div>
@@ -79,18 +79,18 @@ export default function ChatMessages({ messages, isGenerating, onSceneClick }: C
       </AnimatePresence>
       {isGenerating && (
         <div className="flex justify-start">
-          <div className="max-w-[80%] rounded-2xl px-6 py-4 bg-white/20 backdrop-blur-sm border border-white/20 shadow-lg shadow-purple-700/10">
+          <div className="max-w-[80%] rounded-2xl px-6 py-4 bg-gray-100 shadow-md">
             <div className="flex items-center space-x-2">
               <div
-                className="w-3 h-3 rounded-full bg-purple-400 animate-bounce"
+                className="w-3 h-3 rounded-full bg-yellow-400 animate-bounce"
                 style={{ animationDelay: "0ms" }}
               ></div>
               <div
-                className="w-3 h-3 rounded-full bg-pink-400 animate-bounce"
+                className="w-3 h-3 rounded-full bg-yellow-500 animate-bounce"
                 style={{ animationDelay: "150ms" }}
               ></div>
               <div
-                className="w-3 h-3 rounded-full bg-indigo-400 animate-bounce"
+                className="w-3 h-3 rounded-full bg-yellow-600 animate-bounce"
                 style={{ animationDelay: "300ms" }}
               ></div>
             </div>

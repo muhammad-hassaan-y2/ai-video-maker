@@ -64,23 +64,21 @@ export default function SceneVideosPanel({ videos, onClose, onGenerateMore, onDe
   }
 
   return (
-    <Card className="bg-white/10 backdrop-blur-md border-purple-400/30 shadow-xl shadow-purple-900/20 rounded-xl overflow-hidden h-[60vh] flex flex-col">
-      <CardHeader className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 border-b border-white/10 flex flex-row justify-between items-center">
+    <Card className="bg-white border-yellow-400/30 shadow-xl shadow-blue-900/10 rounded-xl overflow-hidden h-[60vh] flex flex-col">
+      <CardHeader className="bg-gradient-to-r from-yellow-50 to-blue-50 border-b border-yellow-200/50 flex flex-row justify-between items-center">
         <div>
-          <CardTitle className="flex items-center">
-            <Film className="h-5 w-5 text-pink-400 mr-2" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-purple-200">
-              Your Scene Videos
-            </span>
+          <CardTitle className="flex items-center text-gray-900">
+            <Film className="h-5 w-5 text-yellow-600 mr-2" />
+            <span>Your Scene Videos</span>
           </CardTitle>
-          <CardDescription className="text-purple-200/80">
+          <CardDescription className="text-gray-600">
             {videos.length} {videos.length === 1 ? "video" : "videos"} generated
           </CardDescription>
         </div>
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 text-white/70 hover:text-white hover:bg-white/10"
+          className="h-8 w-8 text-gray-500 hover:text-gray-700 hover:bg-gray-100"
           onClick={onClose}
         >
           <X className="h-4 w-4" />
@@ -98,7 +96,7 @@ export default function SceneVideosPanel({ videos, onClose, onGenerateMore, onDe
               transition={{ duration: 0.2 }}
               className="relative rounded-lg overflow-hidden group"
             >
-              <div className="aspect-video bg-black/40 relative cursor-pointer" onClick={() => setSelectedVideo(video)}>
+              <div className="aspect-video bg-gray-100 relative cursor-pointer" onClick={() => setSelectedVideo(video)}>
                 {video.thumbnailUrl ? (
                   <img
                     src={video.thumbnailUrl || "/placeholder.svg"}
@@ -106,20 +104,20 @@ export default function SceneVideosPanel({ videos, onClose, onGenerateMore, onDe
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-900/50 to-pink-900/50 flex items-center justify-center">
-                    <span className="text-white/50">Scene {video.sceneId}</span>
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-yellow-50 flex items-center justify-center">
+                    <span className="text-gray-400">Scene {video.sceneId}</span>
                   </div>
                 )}
 
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center">
-                    <Play className="h-6 w-6 text-white" />
+                  <div className="w-12 h-12 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center">
+                    <Play className="h-6 w-6 text-blue-800" />
                   </div>
                 </div>
 
-                <div className="absolute bottom-0 left-0 right-0 p-3 bg-black/60 backdrop-blur-sm">
-                  <h3 className="text-white font-medium truncate">Scene {video.sceneId}</h3>
-                  <p className="text-white/70 text-sm truncate">{video.description}</p>
+                <div className="absolute bottom-0 left-0 right-0 p-3 bg-white/90 backdrop-blur-sm">
+                  <h3 className="text-gray-900 font-medium truncate">Scene {video.sceneId}</h3>
+                  <p className="text-gray-600 text-sm truncate">{video.description}</p>
                 </div>
               </div>
 
@@ -127,7 +125,7 @@ export default function SceneVideosPanel({ videos, onClose, onGenerateMore, onDe
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="absolute top-2 right-2 bg-black/50 text-red-400 hover:text-red-300 hover:bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="absolute top-2 right-2 bg-white/70 text-red-600 hover:text-red-700 hover:bg-white/90 opacity-0 group-hover:opacity-100 transition-opacity"
                   onClick={(e) => {
                     e.stopPropagation()
                     onDeleteVideo(video.sceneId)
@@ -143,27 +141,27 @@ export default function SceneVideosPanel({ videos, onClose, onGenerateMore, onDe
         {videos.length === 0 && (
           <div className="h-full flex items-center justify-center">
             <div className="text-center p-6">
-              <h3 className="text-xl font-medium mb-2">No Scene Videos Yet</h3>
-              <p className="text-white/70">Generate your first scene video to see it here.</p>
+              <h3 className="text-xl font-medium mb-2 text-gray-900">No Scene Videos Yet</h3>
+              <p className="text-gray-600">Generate your first scene video to see it here.</p>
             </div>
           </div>
         )}
       </CardContent>
 
       {totalPages > 1 && (
-        <div className="p-4 border-t border-white/10 flex justify-between items-center">
+        <div className="p-4 border-t border-gray-200 flex justify-between items-center">
           <Button
             variant="outline"
             size="sm"
             onClick={handlePrevPage}
             disabled={currentPage === 0}
-            className="text-white border-white/20 hover:bg-white/10"
+            className="text-gray-700 border-gray-300 hover:bg-gray-100"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Previous
           </Button>
 
-          <span className="text-white/70 text-sm">
+          <span className="text-gray-600 text-sm">
             Page {currentPage + 1} of {totalPages}
           </span>
 
@@ -172,7 +170,7 @@ export default function SceneVideosPanel({ videos, onClose, onGenerateMore, onDe
             size="sm"
             onClick={handleNextPage}
             disabled={currentPage === totalPages - 1}
-            className="text-white border-white/20 hover:bg-white/10"
+            className="text-gray-700 border-gray-300 hover:bg-gray-100"
           >
             Next
             <ArrowRight className="h-4 w-4 ml-2" />

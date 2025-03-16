@@ -46,7 +46,7 @@ export default function ScenesPanel({
   const [editedDescription, setEditedDescription] = useState("")
   const [editedVisualElements, setEditedVisualElements] = useState("")
   const [workingScenes, setWorkingScenes] = useState<VideoScene[]>(scenes)
-  const [generationAttempts, setGenerationAttempts] = useState(0)
+  const [generationAttempts, setGenerationAttempts] = useState(0);
   const [modelLimitation] = useState<string | null>(
     "Note: Each scene is limited to 5 seconds maximum due to AI model constraints.",
   )
@@ -55,6 +55,9 @@ export default function ScenesPanel({
   const [sceneVideos, setSceneVideos] = useState<SceneVideo[]>([])
   const [showSceneVideos, setShowSceneVideos] = useState(false)
   const editFormRef = useRef<HTMLDivElement>(null)
+ 
+
+  console.log(generationAttempts)
 
   // Update working scenes when scenes prop changes
   useEffect(() => {
@@ -82,8 +85,6 @@ export default function ScenesPanel({
     return duration
   }
 
-  console.log(generationAttempts)
-
   // Function to handle video generation for a specific scene
   const handleGenerateSceneVideo = async (sceneId: number) => {
     const sceneToGenerate = workingScenes.find((scene) => scene.id === sceneId)
@@ -97,7 +98,7 @@ export default function ScenesPanel({
     setError(null)
     setGenerationProgress(0) // Start at 0%
     setCurrentStep(`Preparing scene ${sceneId}`)
-    setGenerationAttempts((prev) => prev + 1)
+    setGenerationAttempts((prev: number) => prev + 1)
 
     // Immediately start showing progress animation
     const progressInterval = setInterval(() => {
@@ -318,47 +319,7 @@ export default function ScenesPanel({
     }
   }
 
-  // // Add this function to the ScenesPanel component
-  // const handleDeleteVideo = (sceneId: number) => {
-  //   // Remove the video from sceneVideos
-  //   setSceneVideos((prev) => prev.filter((video) => video.sceneId !== sceneId))
-
-  //   // Also remove from savedVideos if needed
-  //   const videoToDelete = savedVideos.find(
-  //     (video) => video.scenes && video.scenes.length === 1 && video.scenes[0].id === sceneId,
-  //   )
-
-  //   // Change this:
-  //   // if (videoToDelete && onSaveVideo) {
-  //   //   // We're using onSaveVideo as a proxy to communicate with the parent component
-  //   //   // In a real app, you'd have a dedicated onDeleteVideo prop
-  //   //   const updatedVideos = savedVideos.filter(v => v.id !== videoToDelete.id)
-  //   //   localStorage.setItem("savedVideos", JSON.stringify(updatedVideos))
-  //   // }
-
-  //   // To this:
-  //   if (videoToDelete) {
-  //     // Remove the video from savedVideos
-  //     const updatedVideos = savedVideos.filter((v) => v.id !== videoToDelete.id)
-
-  //     // Update localStorage directly
-  //     localStorage.setItem("savedVideos", JSON.stringify(updatedVideos))
-
-  //     // Notify the parent component about the deletion
-  //     // We're using onSaveVideo as a proxy since we don't have a dedicated onDeleteVideo prop
-  //     // In a real app, you'd have a dedicated onDeleteVideo prop
-  //     onSaveVideo({ ...videoToDelete, deleted: true })
-  //   }
-
-  //   setVideoUrl(null)
-  //   setShowSceneVideos(false)
-
-  //   toast({
-  //     title: "Video Deleted",
-  //     description: "The video has been removed from your history.",
-  //     duration: 3000,
-  //   })
-  // }
+ 
 
   // If we're showing the video history
   if (showHistory) {
@@ -426,14 +387,14 @@ export default function ScenesPanel({
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.3 }}
         >
-          <Card className="bg-white border-yellow-400/30 shadow-xl shadow-blue-900/10 rounded-xl overflow-hidden h-[60vh] flex flex-col">
-            <CardHeader className="bg-gradient-to-r from-yellow-50 to-blue-50 border-b border-yellow-200/50 flex flex-row justify-between items-center">
+          <Card className="bg-white border-gray-200 shadow-md rounded-xl overflow-hidden h-[60vh] flex flex-col">
+            <CardHeader className="bg-gray-50 border-b border-gray-200 flex flex-row justify-between items-center">
               <div>
-                <CardTitle className="flex items-center text-gray-900">
-                  <Video className="h-5 w-5 text-yellow-600 mr-2" />
-                  <span>Video Storyboard</span>
+                <CardTitle className="flex items-center">
+                  <Video className="h-5 w-5 text-yellow-500 mr-2" />
+                  <span className="text-gray-800">Video Storyboard</span>
                 </CardTitle>
-                <CardDescription className="text-gray-600">
+                <CardDescription className="text-gray-500">
                   {workingScenes.length} {workingScenes.length === 1 ? "scene" : "scenes"} ready for generation
                 </CardDescription>
               </div>
@@ -476,7 +437,7 @@ export default function ScenesPanel({
               <CardContent className="flex-grow flex items-center justify-center p-4">
                 <div className="text-center p-6 bg-gray-50 rounded-lg border border-gray-200">
                   <AlertCircle className="h-12 w-12 text-yellow-500 mx-auto mb-4" />
-                  <h3 className="text-xl font-medium mb-2 text-gray-900">No Scenes Available</h3>
+                  <h3 className="text-xl font-medium mb-2 text-gray-800">No Scenes Available</h3>
                   <p className="text-gray-600 mb-4">
                     There are no scenes available to display. Try generating scenes by describing a video idea in the
                     chat.
@@ -484,14 +445,14 @@ export default function ScenesPanel({
                   <div className="flex flex-col sm:flex-row gap-3 justify-center">
                     <Button
                       onClick={onClose}
-                      className="bg-gradient-to-r from-yellow-400 to-blue-600 hover:from-yellow-500 hover:to-blue-700 text-white"
+                      className="bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-white"
                     >
                       Return to Chat
                     </Button>
                     {savedVideos.length > 0 && (
                       <Button
                         variant="outline"
-                        className="text-gray-700 border-gray-300 hover:bg-gray-100"
+                        className="text-gray-800 border-gray-300 hover:bg-gray-100"
                         onClick={handleShowHistory}
                       >
                         <History className="h-4 w-4 mr-2" />
@@ -506,8 +467,8 @@ export default function ScenesPanel({
                 <CardContent className="flex-grow overflow-y-auto space-y-4 p-4">
                   {/* Model limitation warning */}
                   {modelLimitation && (
-                    <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-gray-700 text-sm flex items-start gap-2">
-                      <Info className="h-5 w-5 text-yellow-600 shrink-0 mt-0.5" />
+                    <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-gray-800 text-sm flex items-start gap-2">
+                      <Info className="h-5 w-5 text-yellow-500 shrink-0 mt-0.5" />
                       <span>{modelLimitation}</span>
                     </div>
                   )}
@@ -515,7 +476,7 @@ export default function ScenesPanel({
                   {/* Scene videos button */}
                   {sceneVideos.length > 0 && (
                     <Button
-                      className="w-full bg-gradient-to-r from-yellow-400 to-blue-600 hover:from-yellow-500 hover:to-blue-700 text-white"
+                      className="w-full bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-white"
                       onClick={handleShowSceneVideos}
                     >
                       <Film className="h-4 w-4 mr-2" />
@@ -528,7 +489,7 @@ export default function ScenesPanel({
                     <div className="sm:hidden">
                       <Button
                         variant="outline"
-                        className="w-full text-gray-700 border-gray-300 hover:bg-gray-100"
+                        className="w-full text-gray-800 border-gray-300 hover:bg-gray-100"
                         onClick={handleShowHistory}
                       >
                         <History className="h-4 w-4 mr-2" />
@@ -543,10 +504,10 @@ export default function ScenesPanel({
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
-                      className="p-4 rounded-lg bg-blue-50 border border-blue-200 shadow-lg mb-4"
+                      className="p-4 rounded-lg bg-gray-50 border border-gray-200 shadow-md mb-4"
                       ref={editFormRef}
                     >
-                      <h3 className="text-lg font-medium mb-3 text-gray-900">Edit Scene {editingSceneId}</h3>
+                      <h3 className="text-lg font-medium mb-3 text-gray-800">Edit Scene {editingSceneId}</h3>
 
                       <div className="space-y-4">
                         <div>
@@ -554,7 +515,7 @@ export default function ScenesPanel({
                           <Textarea
                             value={editedDescription}
                             onChange={(e) => setEditedDescription(e.target.value)}
-                            className="bg-white border-gray-300 text-gray-900 resize-none min-h-[100px]"
+                            className="bg-white border-gray-300 text-gray-800 resize-none min-h-[100px]"
                             placeholder="Describe what happens in this scene..."
                           />
                         </div>
@@ -566,7 +527,7 @@ export default function ScenesPanel({
                           <Textarea
                             value={editedVisualElements}
                             onChange={(e) => setEditedVisualElements(e.target.value)}
-                            className="bg-white border-gray-300 text-gray-900 resize-none"
+                            className="bg-white border-gray-300 text-gray-800 resize-none"
                             placeholder="Text overlay, lens flare, tracking shot, etc."
                           />
                         </div>
@@ -575,14 +536,14 @@ export default function ScenesPanel({
                           <Button
                             variant="outline"
                             size="sm"
-                            className="text-gray-700 border-gray-300 hover:bg-gray-100"
+                            className="text-gray-800 border-gray-300 hover:bg-gray-100"
                             onClick={handleCancelEdit}
                           >
                             Cancel
                           </Button>
                           <Button
                             size="sm"
-                            className="bg-gradient-to-r from-yellow-400 to-blue-600 hover:from-yellow-500 hover:to-blue-700 text-white"
+                            className="bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-white"
                             onClick={handleSaveEdit}
                           >
                             <Check className="h-4 w-4 mr-1" />
@@ -600,13 +561,13 @@ export default function ScenesPanel({
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3, delay: scene.id * 0.1 }}
                       whileHover={{ scale: 1.01 }}
-                      className="p-4 rounded-lg bg-white border border-gray-200 shadow-md hover:shadow-lg transition-all duration-300"
+                      className="p-4 rounded-lg bg-white border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300"
                     >
                       <div className="flex justify-between items-start mb-3">
-                        <h3 className="font-medium text-lg text-blue-700">Scene {scene.id}</h3>
-                        <div className="flex items-center text-sm bg-blue-50 px-2 py-1 rounded-full border border-blue-200">
-                          <Clock className="h-3 w-3 mr-1" />
-                          {scene.duration}
+                        <h3 className="font-medium text-lg text-gray-800">Scene {scene.id}</h3>
+                        <div className="flex items-center text-sm bg-yellow-50 px-2 py-1 rounded-full border border-yellow-200">
+                          <Clock className="h-3 w-3 mr-1 text-yellow-600" />
+                          <span className="text-yellow-700">{scene.duration}</span>
                         </div>
                       </div>
 
@@ -622,7 +583,7 @@ export default function ScenesPanel({
                             {scene.visualElements.map((element, i) => (
                               <span
                                 key={i}
-                                className="text-xs bg-gradient-to-r from-blue-50 to-yellow-50 px-2 py-1 rounded-full border border-gray-200"
+                                className="text-xs bg-gray-100 px-2 py-1 rounded-full border border-gray-200 text-gray-700"
                               >
                                 {element}
                               </span>
@@ -633,7 +594,7 @@ export default function ScenesPanel({
 
                       <div className="flex flex-col sm:flex-row gap-2 mb-3">
                         <Button
-                          className="flex-1 bg-gradient-to-r from-yellow-400 to-blue-600 hover:from-yellow-500 hover:to-blue-700 text-white text-sm"
+                          className="flex-1 bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-white text-sm"
                           onClick={() => handleGenerateSceneVideo(scene.id)}
                           disabled={isGeneratingVideo}
                         >
@@ -646,7 +607,7 @@ export default function ScenesPanel({
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="text-xs text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                          className="text-xs text-gray-600 hover:text-gray-800 hover:bg-gray-100"
                           onClick={() => handleEditScene(scene.id)}
                           type="button"
                         >
@@ -656,7 +617,7 @@ export default function ScenesPanel({
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="text-xs text-red-600 hover:text-red-700 hover:bg-red-50"
+                          className="text-xs text-red-500 hover:text-red-600 hover:bg-red-50"
                           onClick={() => handleDeleteScene(scene.id)}
                           type="button"
                         >
@@ -670,7 +631,7 @@ export default function ScenesPanel({
                   {onAddScene && (
                     <Button
                       variant="outline"
-                      className="w-full border-dashed border-gray-300 hover:border-gray-400 hover:bg-gray-50 h-16 text-gray-700"
+                      className="w-full border-dashed border-gray-300 hover:border-gray-400 hover:bg-gray-50 h-16"
                       onClick={onAddScene}
                     >
                       <Plus className="h-5 w-5 mr-2" />
@@ -680,8 +641,8 @@ export default function ScenesPanel({
                 </CardContent>
                 <CardFooter className="border-t border-gray-200 p-4">
                   {error && (
-                    <div className="w-full mb-3 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm flex items-start gap-2">
-                      <AlertCircle className="h-5 w-5 text-red-600 shrink-0 mt-0.5" />
+                    <div className="w-full mb-3 p-3 bg-red-50 border border-red-200 rounded-lg text-gray-800 text-sm flex items-start gap-2">
+                      <AlertCircle className="h-5 w-5 text-red-500 shrink-0 mt-0.5" />
                       <span>{error}</span>
                     </div>
                   )}
@@ -689,7 +650,7 @@ export default function ScenesPanel({
                   {/* View Scene Videos button instead of Generate Complete Video */}
                   {sceneVideos.length > 0 ? (
                     <Button
-                      className="w-full bg-gradient-to-r from-yellow-400 to-blue-600 hover:from-yellow-500 hover:to-blue-700 text-white shadow-lg shadow-blue-700/10 py-6 text-lg font-medium transition-all duration-300 hover:scale-[1.02]"
+                      className="w-full bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-white shadow-md py-6 text-lg font-medium transition-all duration-300 hover:scale-[1.02]"
                       onClick={handleShowSceneVideos}
                       type="button"
                     >
@@ -698,7 +659,7 @@ export default function ScenesPanel({
                     </Button>
                   ) : (
                     <div className="w-full p-4 text-center text-gray-600">
-                      {`Generate individual scene videos using the "Generate This Scene" buttons above`}
+                      Generate individual scene videos using the &quot;Generate This Scene&quot; buttons above
                     </div>
                   )}
                 </CardFooter>

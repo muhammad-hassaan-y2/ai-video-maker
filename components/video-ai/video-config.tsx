@@ -34,13 +34,13 @@ export default function VideoConfig({
   const lengthId = useId()
 
   return (
-    <Card className="bg-white border-yellow-400/30 mb-6 shadow-xl shadow-blue-900/10 rounded-xl overflow-hidden">
-      <CardHeader className="bg-gradient-to-r from-yellow-50 to-blue-50 border-b border-yellow-200/50">
+    <Card className="bg-white border-gray-200 mb-6 shadow-md rounded-xl overflow-hidden">
+      <CardHeader className="bg-gray-50 border-b border-gray-200">
         <CardTitle className="flex items-center">
-          <Settings className="h-5 w-5 text-yellow-600 mr-2" />
-          <span className="text-gray-900">Video Configuration</span>
+          <Settings className="h-5 w-5 text-yellow-500 mr-2" />
+          <span className="text-gray-800">Video Configuration</span>
         </CardTitle>
-        <CardDescription className="text-gray-600">Set up your video parameters</CardDescription>
+        <CardDescription className="text-gray-500">Set up your video parameters</CardDescription>
       </CardHeader>
       <CardContent className="py-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -49,10 +49,10 @@ export default function VideoConfig({
               Platform
             </label>
             <Select value={platform} onValueChange={(value) => setPlatform(value as Platform)}>
-              <SelectTrigger id={platformId} className="bg-white border-gray-300 text-gray-900 focus:ring-yellow-500">
+              <SelectTrigger id={platformId} className="bg-white border-gray-300 text-gray-800 focus:ring-yellow-500">
                 <SelectValue placeholder="Select platform" />
               </SelectTrigger>
-              <SelectContent className="bg-white border-gray-200 text-gray-900">
+              <SelectContent className="bg-white border-gray-200 text-gray-800">
                 <SelectItem value="tiktok">TikTok</SelectItem>
                 <SelectItem value="youtube-shorts">YouTube Shorts</SelectItem>
                 <SelectItem value="instagram-reels">Instagram Reels</SelectItem>
@@ -84,7 +84,7 @@ export default function VideoConfig({
               <Button
                 variant="outline"
                 size="sm"
-                className="flex-1 border-gray-300 hover:bg-gray-100 text-gray-700"
+                className="flex-1 border-gray-300 hover:bg-gray-100"
                 onClick={onShowApiQuota}
                 type="button"
               >
@@ -95,7 +95,7 @@ export default function VideoConfig({
                 <Button
                   variant="outline"
                   size="sm"
-                  className="flex-1 text-gray-700 border-gray-300 hover:bg-gray-100"
+                  className="flex-1 text-gray-800 border-gray-300 hover:bg-gray-100"
                   onClick={toggleSidePanel}
                   type="button"
                 >
@@ -110,3 +110,4 @@ export default function VideoConfig({
     </Card>
   )
 }
+

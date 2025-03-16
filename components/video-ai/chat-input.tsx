@@ -20,7 +20,7 @@ export default function ChatInput({ prompt, setPrompt, handleSubmit, isGeneratin
       <Textarea
         id={textareaId}
         placeholder="Describe your video idea..."
-        className="min-h-12 bg-white/10 backdrop-blur-sm border-white/20 focus-visible:ring-yellow-500 placeholder:text-white/50 text-white rounded-xl resize-none"
+        className="min-h-12 bg-white border-gray-300 focus-visible:ring-yellow-500 placeholder:text-gray-400 text-gray-800 rounded-xl resize-none"
         value={prompt}
         onChange={(e) => setPrompt(e.target.value)}
         onKeyDown={(e) => {
@@ -32,7 +32,7 @@ export default function ChatInput({ prompt, setPrompt, handleSubmit, isGeneratin
       />
       <Button
         onClick={handleSubmit}
-        className={`bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 rounded-full w-12 h-12 p-0 shadow-lg shadow-yellow-700/30 transition-all duration-300 ${isGenerating || !prompt.trim() ? "opacity-50" : "hover:scale-105"}`}
+        className={`bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-white rounded-full w-12 h-12 p-0 shadow-md transition-all duration-300 ${isGenerating || !prompt.trim() ? "opacity-50" : "hover:scale-105"}`}
         disabled={isGenerating || !prompt.trim()}
         type="button"
       >

@@ -62,9 +62,7 @@ export default function VideoHistorySection({
         <div className="flex justify-between items-center">
           <CardTitle className="flex items-center">
             <History className="h-5 w-5 text-yellow-600 mr-2" />
-            <span className="text-gray-900">
-              Recent Videos
-            </span>
+            <span className="text-gray-900">Recent Videos</span>
           </CardTitle>
           <Button
             variant="outline"
@@ -77,9 +75,10 @@ export default function VideoHistorySection({
         </div>
         <CardDescription className="text-gray-600">Your recently generated videos</CardDescription>
       </CardHeader>
-      <CardContent className="p-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {videos.map((video) => (
+
+      <CardContent className="p-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          {recentVideos.map((video) => (
             <motion.div
               key={video.id}
               initial={{ opacity: 0, y: 10 }}
@@ -100,7 +99,7 @@ export default function VideoHistorySection({
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-100 to-yellow-100 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-yellow-50 flex items-center justify-center">
                     <Film className="h-8 w-8 text-gray-400" />
                   </div>
                 )}
@@ -132,3 +131,4 @@ export default function VideoHistorySection({
     </Card>
   )
 }
+
