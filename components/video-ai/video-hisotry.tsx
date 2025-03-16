@@ -46,36 +46,35 @@ export default function VideoHistory({ videos, onClose, onSelectVideo }: VideoHi
   }
 
   return (
-    <Card className="bg-white/10 backdrop-blur-md border-purple-400/30 shadow-xl shadow-purple-900/20 rounded-xl overflow-hidden h-[60vh] flex flex-col">
-      <CardHeader className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 border-b border-white/10 flex flex-row justify-between items-center">
+    <Card className="bg-white border-yellow-400/30 shadow-xl shadow-blue-900/10 rounded-xl overflow-hidden h-[60vh] flex flex-col">
+      <CardHeader className="bg-gradient-to-r from-yellow-50 to-blue-50 border-b border-yellow-200/50 flex flex-row justify-between items-center">
         <div>
-          <CardTitle className="text-transparent bg-clip-text bg-gradient-to-r from-white to-purple-200">
+          <CardTitle className="text-gray-900 flex items-center">
             Your Video History
           </CardTitle>
-          <CardDescription className="text-purple-200/80">
+          <CardDescription className="text-gray-600">
             {videos.length} {videos.length === 1 ? "video" : "videos"} generated
           </CardDescription>
         </div>
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 text-white/70 hover:text-white hover:bg-white/10"
+          className="h-8 w-8 text-gray-500 hover:text-gray-700 hover:bg-gray-100"
           onClick={onClose}
         >
           <X className="h-4 w-4" />
         </Button>
       </CardHeader>
-
-      <CardContent className="flex-grow overflow-y-auto p-4">
+      <CardContent className="overflow-y-auto p-4">
         {videos.length === 0 ? (
           <div className="h-full flex items-center justify-center">
             <div className="text-center p-6">
-              <h3 className="text-xl font-medium mb-2">No Videos Yet</h3>
-              <p className="text-white/70">Generate your first video to see it here.</p>
+              <h3 className="text-xl font-medium mb-2 text-gray-900">No Videos Yet</h3>
+              <p className="text-gray-600">Generate your first video to see it here.</p>
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {paginatedVideos.map((video) => (
               <motion.div
                 key={video.id}
@@ -86,7 +85,7 @@ export default function VideoHistory({ videos, onClose, onSelectVideo }: VideoHi
                 className="relative rounded-lg overflow-hidden cursor-pointer group"
                 onClick={() => onSelectVideo(video)}
               >
-                <div className="aspect-video bg-black/40 relative">
+                <div className="aspect-video bg-gray-100 relative">
                   {video.thumbnailUrl ? (
                     <Image
                       src={video.thumbnailUrl || "/placeholder.svg"}
@@ -96,20 +95,20 @@ export default function VideoHistory({ videos, onClose, onSelectVideo }: VideoHi
                       height={200}
                     />
                   ) : (
-                    <div className="absolute inset-0 bg-gradient-to-br from-purple-900/50 to-pink-900/50 flex items-center justify-center">
-                      <span className="text-white/50">No thumbnail</span>
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-100 to-yellow-100 flex items-center justify-center">
+                      <span className="text-gray-400">No thumbnail</span>
                     </div>
                   )}
 
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center">
-                      <Play className="h-6 w-6 text-white" />
+                    <div className="w-12 h-12 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center">
+                      <Play className="h-6 w-6 text-blue-800" />
                     </div>
                   </div>
 
-                  <div className="absolute bottom-0 left-0 right-0 p-3 bg-black/60 backdrop-blur-sm">
-                    <h3 className="text-white font-medium truncate">{video.title}</h3>
-                    <div className="flex items-center gap-3 text-xs text-white/70 mt-1">
+                  <div className="absolute bottom-0 left-0 right-0 p-3 bg-white/90 backdrop-blur-sm">
+                    <h3 className="text-gray-900 font-medium truncate">{video.title}</h3>
+                    <div className="flex items-center gap-3 text-xs text-gray-600 mt-1">
                       <div className="flex items-center">
                         <Clock className="h-3 w-3 mr-1" />
                         {video.duration}s
@@ -126,36 +125,33 @@ export default function VideoHistory({ videos, onClose, onSelectVideo }: VideoHi
           </div>
         )}
       </CardContent>
+      <div className="p-4 border-t border-gray-200 flex justify-between items-center">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handlePrevPage}
+          disabled={currentPage === 0}
+          className="text-gray-700 border-gray-300 hover:bg-gray-100"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Previous
+        </Button>
 
-      {totalPages > 1 && (
-        <div className="p-4 border-t border-white/10 flex justify-between items-center">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handlePrevPage}
-            disabled={currentPage === 0}
-            className="text-white border-white/20 hover:bg-white/10"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Previous
-          </Button>
+        <span className="text-gray-600 text-sm">
+          Page {currentPage + 1} of {totalPages}
+        </span>
 
-          <span className="text-white/70 text-sm">
-            Page {currentPage + 1} of {totalPages}
-          </span>
-
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleNextPage}
-            disabled={currentPage === totalPages - 1}
-            className="text-white border-white/20 hover:bg-white/10"
-          >
-            Next
-            <ArrowRight className="h-4 w-4 ml-2" />
-          </Button>
-        </div>
-      )}
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleNextPage}
+          disabled={currentPage === totalPages - 1}
+          className="text-gray-700 border-gray-300 hover:bg-gray-100"
+        >
+          Next
+          <ArrowRight className="h-4 w-4 ml-2" />
+        </Button>
+      </div>
     </Card>
-  )
-}
+  );
+};

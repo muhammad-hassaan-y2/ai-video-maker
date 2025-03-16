@@ -20,17 +20,15 @@ export default function TipsPanel({ platform, setPrompt, hasScenes, onShowScenes
   const buttonId3 = useId()
 
   return (
-    <Card className="bg-white/10 backdrop-blur-md border-yellow-400/30 shadow-xl shadow-blue-900/20 rounded-xl overflow-hidden h-[60vh]">
-      <CardHeader className="bg-gradient-to-r from-yellow-600/20 to-blue-600/20 border-b border-white/10">
-        <CardTitle className="text-transparent bg-clip-text bg-gradient-to-r from-white to-yellow-200">
-          Tips & Suggestions
-        </CardTitle>
-        <CardDescription className="text-yellow-200/80">Get the most out of your AI video creator</CardDescription>
+    <Card className="bg-white border-yellow-400/30 shadow-xl shadow-blue-900/10 rounded-xl overflow-hidden h-[60vh]">
+      <CardHeader className="bg-gradient-to-r from-yellow-50 to-blue-50 border-b border-yellow-200/50">
+        <CardTitle className="text-gray-900">Tips & Suggestions</CardTitle>
+        <CardDescription className="text-gray-600">Get the most out of your AI video creator</CardDescription>
       </CardHeader>
       <CardContent className="p-4 space-y-6">
-        <div className="bg-white/5 p-4 rounded-lg border border-white/10">
-          <h3 className="text-lg font-medium mb-2 flex items-center">
-            <Sparkles className="w-5 h-5 mr-2 text-yellow-400" />
+        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+          <h3 className="text-lg font-medium mb-2 flex items-center text-gray-900">
+            <Sparkles className="w-5 h-5 mr-2 text-yellow-600" />
             Platform Tips:{" "}
             {platform === "tiktok"
               ? "TikTok"
@@ -42,7 +40,7 @@ export default function TipsPanel({ platform, setPrompt, hasScenes, onShowScenes
                     ? "Instagram"
                     : "Instagram Reels"}
           </h3>
-          <ul className="space-y-2 text-sm text-white/80">
+          <ul className="space-y-2 text-sm text-gray-700">
             {platform === "tiktok" && (
               <>
                 <li>• Keep videos between 15-60 seconds for optimal engagement</li>
@@ -52,44 +50,44 @@ export default function TipsPanel({ platform, setPrompt, hasScenes, onShowScenes
             )}
             {platform === "youtube" && (
               <>
-                <li>• Include a compelling thumbnail scene</li>
-                <li>• Structure with clear intro, body, and conclusion</li>
-                <li>• Add calls to action for engagement</li>
+                <li>• Aim for longer videos (3-5 minutes) to increase watch time</li>
+                <li>• Optimize titles and descriptions with relevant keywords</li>
+                <li>• Use end screens and cards to promote other videos</li>
               </>
             )}
             {platform === "youtube-shorts" && (
               <>
                 <li>• Keep videos under 60 seconds</li>
-                <li>• Use vertical format (9:16 aspect ratio)</li>
-                <li>• Create curiosity in the first few seconds</li>
+                <li>• Use vertical format (9:16)</li>
+                <li>• Add music and text overlays to enhance engagement</li>
               </>
             )}
             {platform === "instagram" && (
               <>
-                <li>• Use high-quality visuals and aesthetics</li>
-                <li>• Include relevant hashtags in your description</li>
-                <li>• Consider carousel posts for storytelling</li>
+                <li>• Post high-quality photos and videos</li>
+                <li>• Use relevant hashtags to increase visibility</li>
+                <li>• Engage with your audience through comments and stories</li>
               </>
             )}
             {platform === "instagram-reels" && (
               <>
-                <li>• Keep videos between 15-30 seconds</li>
+                <li>• Create engaging and entertaining short videos</li>
                 <li>• Use trending audio and effects</li>
-                <li>• Create quick, engaging transitions</li>
+                <li>• Collaborate with other creators</li>
               </>
             )}
           </ul>
         </div>
 
-        <div className="bg-white/5 p-4 rounded-lg border border-white/10">
-          <h3 className="text-lg font-medium mb-2">Prompt Suggestions</h3>
-          <p className="text-sm text-white/80 mb-3">Try these prompts to get started:</p>
+        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+          <h3 className="text-lg font-medium mb-2 text-gray-900">Prompt Suggestions</h3>
+          <p className="text-sm text-gray-700 mb-3">Try these prompts to get started:</p>
           <div className="space-y-2">
             <Button
               id={buttonId1}
               variant="outline"
               size="sm"
-              className="w-full justify-start text-left text-white/80 border-white/10 hover:bg-white/10"
+              className="w-full justify-start text-left text-gray-700 border-gray-300 hover:bg-gray-100"
               onClick={() => setPrompt("Create a product showcase video for a new smartphone with sleek transitions")}
               type="button"
             >
@@ -99,7 +97,7 @@ export default function TipsPanel({ platform, setPrompt, hasScenes, onShowScenes
               id={buttonId2}
               variant="outline"
               size="sm"
-              className="w-full justify-start text-left text-white/80 border-white/10 hover:bg-white/10"
+              className="w-full justify-start text-left text-gray-700 border-gray-300 hover:bg-gray-100"
               onClick={() => setPrompt("Make a travel montage video of a beach vacation with upbeat vibes")}
               type="button"
             >
@@ -109,7 +107,7 @@ export default function TipsPanel({ platform, setPrompt, hasScenes, onShowScenes
               id={buttonId3}
               variant="outline"
               size="sm"
-              className="w-full justify-start text-left text-white/80 border-white/10 hover:bg-white/10"
+              className="w-full justify-start text-left text-gray-700 border-gray-300 hover:bg-gray-100"
               onClick={() => setPrompt("Create a cooking tutorial for making pasta with step-by-step instructions")}
               type="button"
             >
@@ -120,7 +118,7 @@ export default function TipsPanel({ platform, setPrompt, hasScenes, onShowScenes
 
         {hasScenes && (
           <Button
-            className="w-full bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700"
+            className="w-full bg-gradient-to-r from-yellow-400 to-blue-600 hover:from-yellow-500 hover:to-blue-700 text-white"
             onClick={onShowScenes}
             type="button"
           >
@@ -132,4 +130,3 @@ export default function TipsPanel({ platform, setPrompt, hasScenes, onShowScenes
     </Card>
   )
 }
-

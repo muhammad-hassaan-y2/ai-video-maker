@@ -77,11 +77,11 @@ export default function VideoGenerationStatus({ progress, currentStep, sceneId }
   ]
 
   return (
-    <Card className="bg-white/10 backdrop-blur-md border-purple-400/30 shadow-xl shadow-purple-900/20 rounded-xl overflow-hidden">
-      <CardHeader className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 border-b border-white/10">
-        <CardTitle className="flex items-center">
-          <Film className="h-5 w-5 text-pink-400 mr-2" />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-purple-200">
+    <Card className="bg-white border-yellow-400/30 shadow-xl shadow-blue-900/10 rounded-xl overflow-hidden">
+      <CardHeader className="bg-gradient-to-r from-yellow-50 to-blue-50 border-b border-yellow-200/50">
+        <CardTitle className="flex items-center text-gray-900">
+          <Film className="h-5 w-5 text-yellow-600 mr-2" />
+          <span>
             {sceneId ? `Generating Scene ${sceneId} Video` : "Generating Your Video"}
           </span>
         </CardTitle>
@@ -90,18 +90,18 @@ export default function VideoGenerationStatus({ progress, currentStep, sceneId }
         {/* Animated progress indicator */}
         <div className="mb-8 relative">
           <div className="flex justify-between mb-2">
-            <span className="text-sm text-white/80">Progress</span>
-            <span className="text-sm font-medium text-white">{progress}%</span>
+            <span className="text-sm text-gray-700">Progress</span>
+            <span className="text-sm font-medium text-gray-900">{progress}%</span>
           </div>
           <Progress
             value={progress}
-            className="h-3 bg-white/10"
-            indicatorClassName="bg-gradient-to-r from-pink-500 to-violet-500"
+            className="h-3 bg-gray-100"
+            indicatorClassName="bg-gradient-to-r from-yellow-400 to-blue-600"
           />
 
           {/* Animated progress glow */}
           <motion.div
-            className="absolute top-1/2 -translate-y-1/2 h-8 w-8 rounded-full bg-gradient-to-r from-pink-500 to-violet-500 opacity-50 blur-md"
+            className="absolute top-1/2 -translate-y-1/2 h-8 w-8 rounded-full bg-gradient-to-r from-yellow-400 to-blue-600 opacity-30 blur-md"
             initial={{ left: "0%" }}
             animate={{ left: `${progress}%` }}
             transition={{ duration: 0.5 }}
@@ -115,33 +115,33 @@ export default function VideoGenerationStatus({ progress, currentStep, sceneId }
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -5 }}
               transition={{ duration: 0.3 }}
-              className="mt-2 text-xs text-white/70 italic"
+              className="mt-2 text-xs text-gray-600 italic"
             >
               {progressText}
             </motion.div>
           </AnimatePresence>
 
           {/* Elapsed time */}
-          <div className="mt-1 text-xs text-white/60">Elapsed time: {formatTime(elapsedTime)}</div>
+          <div className="mt-1 text-xs text-gray-500">Elapsed time: {formatTime(elapsedTime)}</div>
 
           {/* Note about video generation */}
           {progress > 50 && progress < 95 && (
-            <div className="mt-2 text-xs text-yellow-300/90 bg-yellow-500/10 p-2 rounded-md border border-yellow-500/20">
+            <div className="mt-2 text-xs text-yellow-700 bg-yellow-50 p-2 rounded-md border border-yellow-200">
               Note: Video generation can take 1-2 minutes. Each scene is limited to 5 seconds maximum.
             </div>
           )}
         </div>
 
         {/* Animated video preview placeholder */}
-        <div className="mb-8 relative overflow-hidden rounded-lg aspect-video bg-black/30 border border-white/10">
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10"></div>
+        <div className="mb-8 relative overflow-hidden rounded-lg aspect-video bg-gray-100 border border-gray-200">
+          <div className="absolute inset-0 bg-gradient-to-br from-yellow-50 to-blue-50"></div>
 
           {/* Animated particles */}
           <div className="absolute inset-0 overflow-hidden">
             {[...Array(20)].map((_, i) => (
               <motion.div
                 key={i}
-                className="absolute w-1 h-1 bg-white rounded-full"
+                className="absolute w-1 h-1 bg-blue-400 rounded-full"
                 initial={{
                   x: Math.random() * 100 + "%",
                   y: Math.random() * 100 + "%",
@@ -165,19 +165,19 @@ export default function VideoGenerationStatus({ progress, currentStep, sceneId }
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="relative">
               <motion.div
-                className="w-16 h-16 rounded-full border-4 border-purple-500/30 border-t-purple-500 border-r-pink-500"
+                className="w-16 h-16 rounded-full border-4 border-yellow-200 border-t-yellow-500 border-r-blue-500"
                 animate={{ rotate: 360 }}
                 transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
               />
               <div className="absolute inset-0 flex items-center justify-center">
-                <Sparkles className="h-6 w-6 text-white/80" />
+                <Sparkles className="h-6 w-6 text-blue-600" />
               </div>
             </div>
           </div>
 
           {/* Status text */}
           <div className="absolute bottom-3 left-0 right-0 text-center">
-            <div className="inline-block px-3 py-1 bg-black/50 backdrop-blur-sm rounded-full text-xs text-white/80">
+            <div className="inline-block px-3 py-1 bg-white/80 backdrop-blur-sm rounded-full text-xs text-gray-700">
               {currentStep}
             </div>
           </div>
@@ -195,10 +195,10 @@ export default function VideoGenerationStatus({ progress, currentStep, sceneId }
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center ${
                     isCompleted
-                      ? "bg-gradient-to-r from-pink-500 to-violet-500"
+                      ? "bg-gradient-to-r from-yellow-400 to-blue-600 text-white"
                       : isActive
-                        ? "bg-white/20 border border-white/40"
-                        : "bg-white/10 border border-white/20"
+                        ? "bg-gray-100 border border-gray-300"
+                        : "bg-gray-50 border border-gray-200"
                   }`}
                 >
                   {isCompleted ? (
@@ -213,23 +213,23 @@ export default function VideoGenerationStatus({ progress, currentStep, sceneId }
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                     </motion.svg>
                   ) : (
-                    <span className="text-white/80">{step.icon}</span>
+                    <span className="text-gray-600">{step.icon}</span>
                   )}
                 </div>
                 <div className="flex-1">
                   <div className="flex justify-between">
-                    <div className={`text-sm font-medium ${isActive ? "text-white" : "text-white/50"}`}>
+                    <div className={`text-sm font-medium ${isActive ? "text-gray-900" : "text-gray-500"}`}>
                       {step.name}
                     </div>
                     {isActive && !isCompleted && (
-                      <div className="text-xs text-pink-400">{Math.round(stepProgress)}%</div>
+                      <div className="text-xs text-blue-600">{Math.round(stepProgress)}%</div>
                     )}
                   </div>
-                  <div className="text-xs text-white/60 mt-0.5">{step.description}</div>
+                  <div className="text-xs text-gray-500 mt-0.5">{step.description}</div>
                   {isActive && !isCompleted && (
-                    <div className="w-full bg-white/10 h-1 mt-2 rounded-full overflow-hidden">
+                    <div className="w-full bg-gray-100 h-1 mt-2 rounded-full overflow-hidden">
                       <motion.div
-                        className="h-full bg-gradient-to-r from-pink-500 to-violet-500"
+                        className="h-full bg-gradient-to-r from-yellow-400 to-blue-600"
                         initial={{ width: "0%" }}
                         animate={{ width: `${stepProgress}%` }}
                         transition={{ duration: 0.5 }}
@@ -242,12 +242,11 @@ export default function VideoGenerationStatus({ progress, currentStep, sceneId }
           })}
         </div>
 
-        <div className="mt-6 text-center text-white/70 text-sm">
-          <p>This may take a few minutes. Please don&apos;t t close this window.</p>
-          {sceneId && <p className="mt-1 text-pink-300">Generating video for Scene {sceneId} only.</p>}
+        <div className="mt-6 text-center text-gray-600 text-sm">
+          <p>This may take a few minutes. Please don&apos;t close this window.</p>
+          {sceneId && <p className="mt-1 text-blue-600">Generating video for Scene {sceneId} only.</p>}
         </div>
       </CardContent>
     </Card>
   )
 }
-

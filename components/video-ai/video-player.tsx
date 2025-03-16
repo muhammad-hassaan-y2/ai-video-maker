@@ -194,14 +194,14 @@ export default function VideoPlayer({
   }
 
   return (
-    <Card className="bg-white/10 backdrop-blur-md border-purple-400/30 shadow-xl shadow-purple-900/20 rounded-xl overflow-hidden">
-      <CardHeader className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 border-b border-white/10 flex flex-row justify-between items-center">
+    <Card className="bg-white border-yellow-400/30 shadow-xl shadow-blue-900/10 rounded-xl overflow-hidden">
+      <CardHeader className="bg-gradient-to-r from-yellow-50 to-blue-50 border-b border-yellow-200/50 flex flex-row justify-between items-center">
         <div>
-          <CardTitle className="flex items-center">
-            <Sparkles className="h-5 w-5 text-pink-400 mr-2" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-purple-200">{title}</span>
+          <CardTitle className="flex items-center text-gray-900">
+            <Sparkles className="h-5 w-5 text-yellow-600 mr-2" />
+            <span>{title}</span>
           </CardTitle>
-          <CardDescription className="text-purple-200/80">
+          <CardDescription className="text-gray-600">
             {duration > 0 ? `${Math.round(duration)} seconds video` : "Loading video..."}
           </CardDescription>
         </div>
@@ -210,7 +210,7 @@ export default function VideoPlayer({
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-white/70 hover:text-white hover:bg-white/10"
+              className="h-8 w-8 text-gray-500 hover:text-gray-700 hover:bg-gray-100"
               onClick={onShowHistory}
               title="View Video History"
             >
@@ -220,7 +220,7 @@ export default function VideoPlayer({
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 text-white/70 hover:text-white hover:bg-white/10"
+            className="h-8 w-8 text-gray-500 hover:text-gray-700 hover:bg-gray-100"
             onClick={onClose}
           >
             <X className="h-4 w-4" />
@@ -229,21 +229,21 @@ export default function VideoPlayer({
       </CardHeader>
 
       <CardContent className="p-4">
-        <div ref={containerRef} className="relative aspect-video rounded-lg overflow-hidden bg-black/40 mb-4">
+        <div ref={containerRef} className="relative aspect-video rounded-lg overflow-hidden bg-gray-100 mb-4">
           {isLoading && (
-            <div className="absolute inset-0 flex items-center justify-center z-10 bg-black/50 backdrop-blur-sm">
+            <div className="absolute inset-0 flex items-center justify-center z-10 bg-white/90 backdrop-blur-sm">
               <div className="flex flex-col items-center">
                 <div className="relative">
                   <motion.div
-                    className="w-16 h-16 rounded-full border-4 border-purple-500/30 border-t-purple-500 border-r-pink-500"
+                    className="w-16 h-16 rounded-full border-4 border-yellow-200 border-t-yellow-500 border-r-blue-500"
                     animate={{ rotate: 360 }}
                     transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
                   />
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <Sparkles className="h-6 w-6 text-white/80" />
+                    <Sparkles className="h-6 w-6 text-blue-600" />
                   </div>
                 </div>
-                <p className="mt-4 text-white/80 text-sm">Loading your video...</p>
+                <p className="mt-4 text-gray-700 text-sm">Loading your video...</p>
               </div>
             </div>
           )}
@@ -261,10 +261,10 @@ export default function VideoPlayer({
             <div style={placeholderStyle}>Video loading...</div>
           </video>
 
-          <div className="absolute bottom-0 left-0 right-0 bg-black/50 backdrop-blur-sm p-2 transition-opacity duration-300 opacity-100 hover:opacity-100">
-            <div className="w-full h-1 bg-white/20 rounded-full mb-2 cursor-pointer" onClick={handleProgressClick}>
+          <div className="absolute bottom-0 left-0 right-0 bg-white/80 backdrop-blur-sm p-2 transition-opacity duration-300 opacity-100 hover:opacity-100">
+            <div className="w-full h-1 bg-gray-200 rounded-full mb-2 cursor-pointer" onClick={handleProgressClick}>
               <div
-                className="h-full bg-gradient-to-r from-pink-500 to-violet-500 rounded-full"
+                className="h-full bg-gradient-to-r from-yellow-500 to-blue-500 rounded-full"
                 style={{ width: `${progress}%` }}
               ></div>
             </div>
@@ -274,7 +274,7 @@ export default function VideoPlayer({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 text-white hover:bg-white/10"
+                  className="h-8 w-8 text-gray-700 hover:bg-gray-100"
                   onClick={togglePlay}
                 >
                   {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
@@ -283,13 +283,13 @@ export default function VideoPlayer({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 text-white hover:bg-white/10"
+                  className="h-8 w-8 text-gray-700 hover:bg-gray-100"
                   onClick={toggleMute}
                 >
                   {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
                 </Button>
 
-                <span className="text-xs text-white/80">
+                <span className="text-xs text-gray-700">
                   {videoRef.current ? formatTime(videoRef.current.currentTime) : "0:00"} /
                   {duration ? formatTime(duration) : "0:00"}
                 </span>
@@ -298,7 +298,7 @@ export default function VideoPlayer({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 text-white hover:bg-white/10"
+                className="h-8 w-8 text-gray-700 hover:bg-gray-100"
                 onClick={toggleFullscreen}
               >
                 {isFullscreen ? <Minimize className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
@@ -308,13 +308,13 @@ export default function VideoPlayer({
         </div>
 
         <div className="grid grid-cols-3 gap-4">
-          <Button variant="outline" className="text-whit border-white/20 hover:bg-white/10" onClick={handleDownload}>
+          <Button variant="outline" className="text-gray-700 border-gray-300 hover:bg-gray-100" onClick={handleDownload}>
             <Download className="h-4 w-4 mr-2" />
             Download
           </Button>
 
           <Button
-            className="bg-gradient-to-r from-pink-500 to-violet-500 hover:from-pink-600 hover:to-violet-600"
+            className="bg-gradient-to-r from-yellow-400 to-blue-600 hover:from-yellow-500 hover:to-blue-700 text-white"
             onClick={handleSaveVideo}
             disabled={isSaving}
           >
@@ -338,7 +338,7 @@ export default function VideoPlayer({
           {onDeleteVideo && (
             <Button
               variant="outline"
-              className="text-red-400 border-red-400/20 hover:bg-red-500/10 hover:text-red-300"
+              className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
               onClick={handleDeleteVideo}
             >
               <Trash2 className="h-4 w-4 mr-2" />
@@ -348,9 +348,9 @@ export default function VideoPlayer({
         </div>
       </CardContent>
 
-      <CardFooter className="border-t border-white/10 p-4 flex justify-between">
+      <CardFooter className="border-t border-gray-200 p-4 flex justify-between">
         {onBack && (
-          <Button variant="outline" className="text-whit border-white/20 hover:bg-white/10" onClick={onBack}>
+          <Button variant="outline" className="text-gray-700 border-gray-300 hover:bg-gray-100" onClick={onBack}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
           </Button>
@@ -358,7 +358,7 @@ export default function VideoPlayer({
 
         {onGenerateMore && (
           <Button
-            className="bg-gradient-to-r from-pink-500 to-violet-500 hover:from-pink-600 hover:to-violet-600 ml-auto"
+            className="bg-gradient-to-r from-yellow-400 to-blue-600 hover:from-yellow-500 hover:to-blue-700 text-white ml-auto"
             onClick={onGenerateMore}
           >
             <Sparkles className="h-4 w-4 mr-2" />
@@ -369,4 +369,3 @@ export default function VideoPlayer({
     </Card>
   )
 }
-

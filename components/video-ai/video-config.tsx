@@ -34,30 +34,25 @@ export default function VideoConfig({
   const lengthId = useId()
 
   return (
-    <Card className="bg-white/10 backdrop-blur-md border-yellow-400/30 mb-6 shadow-xl shadow-blue-900/20 rounded-xl overflow-hidden">
-      <CardHeader className="bg-gradient-to-r from-yellow-600/20 to-blue-600/20 border-b border-white/10">
+    <Card className="bg-white border-yellow-400/30 mb-6 shadow-xl shadow-blue-900/10 rounded-xl overflow-hidden">
+      <CardHeader className="bg-gradient-to-r from-yellow-50 to-blue-50 border-b border-yellow-200/50">
         <CardTitle className="flex items-center">
-          <Settings className="h-5 w-5 text-yellow-400 mr-2" />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-yellow-200">
-            Video Configuration
-          </span>
+          <Settings className="h-5 w-5 text-yellow-600 mr-2" />
+          <span className="text-gray-900">Video Configuration</span>
         </CardTitle>
-        <CardDescription className="text-yellow-200/80">Set up your video parameters</CardDescription>
+        <CardDescription className="text-gray-600">Set up your video parameters</CardDescription>
       </CardHeader>
       <CardContent className="py-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="space-y-2">
-            <label htmlFor={platformId} className="text-sm font-medium">
+            <label htmlFor={platformId} className="text-sm font-medium text-gray-700">
               Platform
             </label>
             <Select value={platform} onValueChange={(value) => setPlatform(value as Platform)}>
-              <SelectTrigger
-                id={platformId}
-                className="bg-white/10 backdrop-blur-sm border-white/20 text-white focus:ring-yellow-500"
-              >
+              <SelectTrigger id={platformId} className="bg-white border-gray-300 text-gray-900 focus:ring-yellow-500">
                 <SelectValue placeholder="Select platform" />
               </SelectTrigger>
-              <SelectContent className="bg-blue-900/90 backdrop-blur-md border-white/10 text-white">
+              <SelectContent className="bg-white border-gray-200 text-gray-900">
                 <SelectItem value="tiktok">TikTok</SelectItem>
                 <SelectItem value="youtube-shorts">YouTube Shorts</SelectItem>
                 <SelectItem value="instagram-reels">Instagram Reels</SelectItem>
@@ -67,10 +62,10 @@ export default function VideoConfig({
 
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <label htmlFor={lengthId} className="text-sm font-medium">
+              <label htmlFor={lengthId} className="text-sm font-medium text-gray-700">
                 Video Length
               </label>
-              <span className="text-sm text-yellow-400">{videoLength} seconds</span>
+              <span className="text-sm text-yellow-600">{videoLength} seconds</span>
             </div>
             <Slider
               id={lengthId}
@@ -84,12 +79,12 @@ export default function VideoConfig({
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Quick Actions</label>
+            <label className="text-sm font-medium text-gray-700">Quick Actions</label>
             <div className="flex gap-2">
               <Button
                 variant="outline"
                 size="sm"
-                className="flex-1 border-white/20 hover:bg-white/10"
+                className="flex-1 border-gray-300 hover:bg-gray-100 text-gray-700"
                 onClick={onShowApiQuota}
                 type="button"
               >
@@ -100,7 +95,7 @@ export default function VideoConfig({
                 <Button
                   variant="outline"
                   size="sm"
-                  className="flex-1 text-white border-white/20 hover:bg-white/10"
+                  className="flex-1 text-gray-700 border-gray-300 hover:bg-gray-100"
                   onClick={toggleSidePanel}
                   type="button"
                 >
@@ -115,4 +110,3 @@ export default function VideoConfig({
     </Card>
   )
 }
-
