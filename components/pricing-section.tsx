@@ -58,17 +58,19 @@ export default function PricingSection() {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <motion.h2
-            className="text-3xl md:text-4xl font-bold text-white mb-4"
+            className="text-3xl md:text-4xl font-bold text-gray-950 mb-4"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
             Simple{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-violet-500">Pricing</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600">
+              Pricing
+            </span>
           </motion.h2>
           <motion.p
-            className="text-xl text-white/70 max-w-2xl mx-auto"
+            className="text-xl text-gray-950 max-w-2xl mx-auto"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -94,20 +96,20 @@ export default function PricingSection() {
               whileHover={{ y: -5, scale: 1.02, boxShadow: "0 15px 30px -10px rgba(168,85,247,0.3)" }}
             >
               {plan.popular && (
-                <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-pink-500 to-violet-500 text-white text-center py-1.5 text-sm font-medium shadow-md">
+                <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-yellow-400 to-yellow-600 text-black text-center py-1.5 text-sm font-medium shadow-md">
                   Most Popular
                 </div>
               )}
               <div className="p-8">
-                <h3 className="text-2xl font-bold text-white mb-2">{plan.name}</h3>
-                <p className="text-white/70 mb-6">{plan.description}</p>
+                <h3 className="text-2xl font-bold text-gray-950 mb-2">{plan.name}</h3>
+                <p className="text-gray-950 mb-6">{plan.description}</p>
                 <div className="flex items-end mb-6">
-                  <span className="text-4xl font-bold text-white">{plan.price}</span>
+                  <span className="text-4xl font-bold text-gray-950">{plan.price}</span>
                   <span className="text-white/70 ml-1 mb-1">/month</span>
                 </div>
                 <ul className="space-y-3 mb-8">
                   {plan.features.map((feature, i) => (
-                    <li key={i} className="flex items-center text-white/80">
+                    <li key={i} className="flex items-center text-gray-950">
                       <Check className="w-5 h-5 text-green-400 mr-2" />
                       {feature}
                     </li>
@@ -116,8 +118,8 @@ export default function PricingSection() {
                 <Button
                   className={`w-full py-6 transition-all duration-300 hover:scale-[1.02] ${
                     plan.popular
-                      ? "bg-gradient-to-r from-pink-500 to-violet-500 hover:from-pink-600 hover:to-violet-600 shadow-lg shadow-purple-700/30"
-                      : "bg-white/20 hover:bg-white/30 backdrop-blur-sm shadow-md shadow-purple-700/20"
+                      ? "bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 shadow-lg shadow-yellow-700/30"
+                      : "bg-white/20 hover:bg-white/30 backdrop-blur-sm shadow-md shadow-yellow-700/20 text-gray-950"
                   }`}
                 >
                   {plan.buttonText}

@@ -45,8 +45,8 @@ export default function ChatMessages({ messages, isGenerating, onSceneClick }: C
             <div
               className={`max-w-[80%] rounded-2xl px-4 py-3 shadow-lg ${
                 message.role === "user"
-                  ? "bg-gradient-to-r from-pink-500 to-violet-600 text-white shadow-purple-700/20"
-                  : "bg-white/20 backdrop-blur-sm border border-white/20 text-white shadow-purple-700/10"
+                  ? "bg-gradient-to-r from-yellow-400 to-yellow-600 text-black shadow-yellow-700/20"
+                  : "bg-white/20 backdrop-blur-sm border border-white/20 text-white shadow-yellow-700/10"
               }`}
             >
               <div className="flex flex-col">
@@ -67,7 +67,7 @@ export default function ChatMessages({ messages, isGenerating, onSceneClick }: C
                     onClick={() => onSceneClick(message.scenes || [])}
                   >
                     <Video className="h-4 w-4 text-pink-300" />
-                    <span className="text-sm font-medium text-pink-300">
+                    <span className="text-sm font-medium text-yellow-300">
                       {message.scenes.length} scenes generated - Click to view
                     </span>
                   </div>

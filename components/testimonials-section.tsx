@@ -32,7 +32,7 @@ const testimonials = [
 
 export default function TestimonialsSection() {
   return (
-    <section className="py-20 bg-black/50">
+    <section className="py-20 bg-gray-950">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <motion.h2
@@ -43,7 +43,7 @@ export default function TestimonialsSection() {
             transition={{ duration: 0.6 }}
           >
             What Our{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-violet-500">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600">
               Users Say
             </span>
           </motion.h2>
@@ -67,7 +67,7 @@ export default function TestimonialsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.1 * index }}
-              whileHover={{ y: -5, scale: 1.02, boxShadow: "0 15px 30px -10px rgba(168,85,247,0.3)" }}
+              whileHover={{ y: -5, scale: 1.02, boxShadow: "0 15px 30px -10px rgba(255,221,64,0.3)" }}
             >
               <div className="flex items-center mb-4">
                 <div className="w-12 h-12 rounded-full overflow-hidden mr-4">
@@ -79,7 +79,7 @@ export default function TestimonialsSection() {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-white">{testimonial.name}</h3>
-                  <p className="text-purple-400 text-sm">{testimonial.role}</p>
+                  <p className="text-yellow-400 text-sm">{testimonial.role}</p>
                 </div>
               </div>
               <div className="flex mb-4">

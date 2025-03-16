@@ -38,7 +38,7 @@ const features = [
 
 export default function FeaturesSection() {
   return (
-    <section id="features" className="py-20 bg-black/50">
+    <section id="features" className="py-20 bg-gray-950">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <motion.h2
@@ -49,7 +49,9 @@ export default function FeaturesSection() {
             transition={{ duration: 0.6 }}
           >
             Powerful{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-violet-500">Features</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600">
+              Features
+            </span>
           </motion.h2>
           <motion.p
             className="text-xl text-white/70 max-w-2xl mx-auto"
@@ -71,9 +73,9 @@ export default function FeaturesSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.1 * index }}
-              whileHover={{ y: -5, boxShadow: "0 15px 30px -10px rgba(168,85,247,0.4)", scale: 1.02 }}
+              whileHover={{ y: -5, boxShadow: "0 15px 30px -10px rgba(255,221,64,0.4)", scale: 1.02 }}
             >
-              <div className="text-purple-400 mb-4">{feature.icon}</div>
+              <div className="text-yellow-400 mb-4">{feature.icon}</div>
               <h3 className="text-xl font-bold text-white mb-2">{feature.title}</h3>
               <p className="text-white/70">{feature.description}</p>
             </motion.div>
