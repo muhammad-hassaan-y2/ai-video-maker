@@ -143,19 +143,54 @@ export default function VideoPlayer({
     return `${mins}:${secs < 10 ? "0" : ""}${secs}`
   }
 
-  const handleDownload = () => {
-    const link = document.createElement("a")
-    link.href = videoUrl
-    link.download = "generated-video.mp4"
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
+  const handleDownload = async () => {
+    try {
+      // Show loading toast
+      toast({
+        title: "Downloading Video",
+        description: "Please wait while we prepare your video...",
+        duration: 3000,
+      })
 
-    toast({
-      title: "Video Downloaded",
-      description: "Your video has been downloaded successfully.",
-      duration: 3000,
-    })
+      // Fetch the video content
+      const response = await fetch(videoUrl)
+      if (!response.ok) {
+        throw new Error("Failed to download video")
+      }
+
+      // Get the video as a blob
+      const blob = await response.blob()
+
+      // Create a blob URL
+      const blobUrl = URL.createObjectURL(blob)
+
+      // Create a link element
+      const link = document.createElement("a")
+      link.href = blobUrl
+      link.download = `${title.replace(/\s+/g, "-").toLowerCase()}-video.mp4`
+      document.body.appendChild(link)
+
+      // Trigger the download
+      link.click()
+
+      // Clean up
+      document.body.removeChild(link)
+      URL.revokeObjectURL(blobUrl)
+
+      toast({
+        title: "Video Downloaded",
+        description: "Your video has been downloaded successfully.",
+        duration: 3000,
+      })
+    } catch (error) {
+      console.error("Download error:", error)
+      toast({
+        title: "Download Failed",
+        description: "There was an error downloading your video. Please try again.",
+        variant: "destructive",
+        duration: 5000,
+      })
+    }
   }
 
   const handleSaveVideo = async () => {
@@ -342,7 +377,7 @@ export default function VideoPlayer({
           {onDeleteVideo && (
             <Button
               variant="outline"
-              className="text-red-500 border-red-200 hover:bg-red-50 hover:text-red-600"
+              className="text-red-400 border-red-200 hover:bg-red-50 hover:text-red-600"
               onClick={handleDeleteVideo}
             >
               <Trash2 className="h-4 w-4 mr-2" />

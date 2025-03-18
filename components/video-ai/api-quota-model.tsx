@@ -20,7 +20,7 @@ export default function ApiQuotaModal({ isVisible, onClose }: ApiQuotaModalProps
       exit={{ opacity: 0 }}
     >
       <motion.div
-        className="bg-white border border-gray-200 rounded-xl p-6 max-w-md w-full shadow-xl"
+        className="bg-white border border-gray-300 rounded-xl p-6 max-w-md w-full shadow-xl"
         initial={{ scale: 0.9, y: 20 }}
         animate={{ scale: 1, y: 0 }}
         exit={{ scale: 0.9, y: 20 }}
