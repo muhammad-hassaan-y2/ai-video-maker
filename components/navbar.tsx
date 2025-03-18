@@ -15,31 +15,31 @@ export default function Navbar() {
       <div className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-violet-500 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-yellow-500 to-rose-700 flex items-center justify-center">
               <span className="text-white font-bold">AV</span>
             </div>
             <span className="text-white font-bold text-xl">AIVideoGen</span>
           </Link>
 
           <div className="hidden md:flex gap-8 text-white">
-            <Link href="/#features" className="hover:text-purple-300 transition-colors">
+            <Link href="/#features" className="hover:text-yellow-300 transition-colors">
               Features
             </Link>
-            <Link href="/#how-it-works" className="hover:text-purple-300 transition-colors">
+            <Link href="/#how-it-works" className="hover:text-amber-200 transition-colors">
               How It Works
             </Link>
-            <Link href="/#pricing" className="hover:text-purple-300 transition-colors">
+            <Link href="/#pricing" className="hover:text-yellow-300 transition-colors">
               Pricing
             </Link>
           </div>
 
           <div className="flex gap-4">
             <Link href="/chat">
-              <Button variant="outline" className="text-wh border-purple-500 hover:bg-purple-900">
+              <Button variant="outline" className="text-wh border-rose-200 hover:from-amber-200 hover:to-amber-300">
                 Try Now
               </Button>
             </Link>
-            <Button className="bg-gradient-to-r from-yellow-500 to-amber-700C  hover:from-pink-600 hover:to-violet-600">
+            <Button className="bg-gradient-to-r from-yellow-500 to-amber-400  hover:from-amber-400 hover:to-yellow-500">
               Sign Up
             </Button>
           </div>
@@ -48,4 +48,3 @@ export default function Navbar() {
     </motion.nav>
   )
 }
-
