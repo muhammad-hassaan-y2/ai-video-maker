@@ -109,6 +109,8 @@ export default function UserProfile({ onShowScenesHistory }: UserProfileProps) {
                   className="w-full justify-start text-white hover:bg-white/10"
                   onClick={handleSignOut}
                 >
+
+                  
                   <LogOut className="mr-2 h-4 w-4" />
                   Sign out
                 </Button>

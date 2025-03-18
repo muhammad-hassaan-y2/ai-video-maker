@@ -39,7 +39,7 @@ export default function Navbar() {
                 Try Now
               </Button>
             </Link>
-            <Button className="bg-gradient-to-r from-pink-500 to-violet-500 hover:from-pink-600 hover:to-violet-600">
+            <Button className="bg-gradient-to-r from-yellow-500 to-amber-700C  hover:from-pink-600 hover:to-violet-600">
               Sign Up
             </Button>
           </div>

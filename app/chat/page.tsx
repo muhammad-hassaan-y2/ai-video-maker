@@ -285,7 +285,7 @@ export default function ChatPage() {
 
   return (
     <div className="min-h-screen bg-white text-gray-800 relative overflow-hidden">
-      <div className="mt-">
+      <div className="mt-20">
         <Navbar />
       </div>
       <Toaster />
@@ -413,4 +413,3 @@ export default function ChatPage() {
     </div>
   )
 }
-

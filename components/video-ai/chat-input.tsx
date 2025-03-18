@@ -16,7 +16,7 @@ export default function ChatInput({ prompt, setPrompt, handleSubmit, isGeneratin
   const textareaId = useId()
 
   return (
-    <div className="flex w-full items-center space-x-3">
+    <div className="flex w-full items-center space-x-4">
       <Textarea
         id={textareaId}
         placeholder="Describe your video idea..."
