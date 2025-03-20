@@ -31,6 +31,7 @@ interface VideoPlayerProps {
   onGenerateMore?: () => void
   onShowHistory?: () => void
   onDeleteVideo?: () => void
+  isMergedVideo?: boolean
 }
 
 export default function VideoPlayer({
@@ -42,6 +43,7 @@ export default function VideoPlayer({
   onGenerateMore,
   onShowHistory,
   onDeleteVideo,
+  isMergedVideo = false,
 }: VideoPlayerProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -167,7 +169,7 @@ export default function VideoPlayer({
       // Create a link element
       const link = document.createElement("a")
       link.href = blobUrl
-      link.download = `${title.replace(/\s+/g, "-").toLowerCase()}-video.mp4`
+      link.download = isMergedVideo ? "merged-video.mp4" : `${title.replace(/\s+/g, "-").toLowerCase()}-video.mp4`
       document.body.appendChild(link)
 
       // Trigger the download
@@ -237,7 +239,11 @@ export default function VideoPlayer({
             <span className="text-gray-800">{title}</span>
           </CardTitle>
           <CardDescription className="text-gray-500">
-            {duration > 0 ? `${Math.round(duration)} seconds video` : "Loading video..."}
+            {isMergedVideo
+              ? "Combined from multiple scenes"
+              : duration > 0
+                ? `${Math.round(duration)} seconds video`
+                : "Loading video..."}
           </CardDescription>
         </div>
         <div className="flex items-center gap-2">

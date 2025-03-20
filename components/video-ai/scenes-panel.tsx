@@ -46,7 +46,7 @@ export default function ScenesPanel({
   const [editedDescription, setEditedDescription] = useState("")
   const [editedVisualElements, setEditedVisualElements] = useState("")
   const [workingScenes, setWorkingScenes] = useState<VideoScene[]>(scenes)
-  const [generationAttempts, setGenerationAttempts] = useState(0);
+  const [generationAttempts, setGenerationAttempts] = useState(0)
   const [modelLimitation] = useState<string | null>(
     "Note: Each scene is limited to 5 seconds maximum due to AI model constraints.",
   )
@@ -55,7 +55,6 @@ export default function ScenesPanel({
   const [sceneVideos, setSceneVideos] = useState<SceneVideo[]>([])
   const [showSceneVideos, setShowSceneVideos] = useState(false)
   const editFormRef = useRef<HTMLDivElement>(null)
- 
 
   console.log(generationAttempts)
 
@@ -318,8 +317,6 @@ export default function ScenesPanel({
       })
     }
   }
-
- 
 
   // If we're showing the video history
   if (showHistory) {
